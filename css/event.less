@@ -1,0 +1,284 @@
+
+header {
+	> * {
+		height: 30px;
+		display: inline-block;
+	} 
+	> .breadcrumbs {
+		display: block;
+		background-color: #2B343D;
+		vertical-align: middle;
+		padding-left: 20px;
+		a {
+			height: 30px;
+			padding-left: 10px;
+			display: inline-block;
+			line-height: 30px;
+			text-decoration: none;
+			color: #3E9CE4;
+			&:hover {
+				color: lighten(#3E9CE4, 20%);
+			}
+			&:before {
+				content: '\2192';
+				padding-right: 10px;
+				font-weight: bold;
+				font-size: 13px;
+				cursor: default;
+			}
+		}
+		a.active {
+			&:hover {
+				color: #3E9CE4;
+			}
+		}
+		a.to-main-menu {
+			padding: 0 10px;
+			background-color: #1587E0;
+			color: white;
+			&:hover {
+				background-color: darken(#1587E0, 10%);
+				color: white;
+			}
+			&:before {
+				content: '';
+				font-size: 0;
+				padding-right: 0;
+			}
+		}
+	}
+}
+
+#content {
+	height: -moz-calc(~"100% - 90px");
+	height: -webkit-calc(~"100% - 90px");
+	height: -o-calc(~"100% - 90px");
+	height: calc(~"100% - 90px");
+	overflow-y: auto;
+	position: relative;
+	> * {		
+		position: absolute;
+	}
+}
+
+.datepicker-el, .timepicker-el {
+	display: inline-block;
+	input {
+		width: 90px;
+	}
+}
+
+.input-wrapper {
+	display: inline-block;
+	> span {
+		text-align: right;
+		width: 15px;
+		float: left;
+		margin-right: 5px;
+	}
+}
+
+.input-append .add-on {
+	height: 25px;
+	cursor: pointer;
+	line-height: 15px;
+	&:hover {
+		background-color: darken(#eee, 10%);
+	}
+}
+
+.address-marker {
+    cursor:pointer;
+    background:yellow;
+    -webkit-transform: translateX(-50%) translateY(-35px);
+    height:35px;
+    padding:0 8%;
+    white-space: nowrap;
+    color:#fff;
+    font:500 14px/20px Arial;
+    background-size:100%;
+    background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><g><rect x='5%' y='0' width='90%' height='20' fill='#f9b000' style='-webkit-svg-shadow: 0 2px 3px rgba(0,0,0,0.6);'></rect></g><svg x='50%' y='20' style='overflow:visible;'><polygon points='-10,0 10,0 0,10' fill='#f9b000' style='-webkit-svg-shadow: 0 2px 3px rgba(0,0,0,0.6);'></polygon></svg></svg>");
+}
+
+.event-create {	
+	h4 {
+		font-size: 14px;
+		margin: 5px 10px 10px 0;
+	}
+	.left, .right, .center{
+		width: 25%;	
+		height: 100%;
+		left: 0;	
+		height: -moz-calc(~"100% - 70px");
+		height: -webkit-calc(~"100% - 70px");
+		height: -o-calc(~"100% - 70px");
+		height: calc(~"100% - 70px");
+		overflow-y: auto;
+		position: relative;
+	}
+	.left, .right {
+		background-color: #FBFBFB;
+	}
+	.left {
+		padding: 10px 15px 10px 20px;
+		> div {
+			background-color: white;
+			border: 1px solid #EEEEEE;	
+			padding: 10px;
+			margin-bottom: 10px;
+			width: 100%;
+			label {
+				width: 80px;
+			}
+		}
+		.event-info {
+			select {
+				width: 100%;
+			}
+			textarea {
+				margin-bottom: 10px;
+				width: 100%;
+				height: auto;
+			}
+			#event-description {
+				height: 100px;
+			}
+		}
+		.event-date {
+			label {
+				width: 70px;
+			}
+			span {
+				vertical-align: top;
+			}
+			.datepicker-el, .timepicker-el {
+				margin-bottom: 20px;
+				margin-right: 10px;
+				vertical-align: middle;
+			}
+			#event-date-overall {
+				margin-left: 20px;
+			}
+		}		
+	}
+	.center {
+		left: 25%;
+		width: 50%;
+		padding: 15px;
+		h4 {
+			margin-bottom: 15px;
+		}
+		input {
+			margin-left: 5px;			
+			margin-bottom: 0;
+		}
+		> label, > span {
+			display: inline-block;
+			font-size: 12px;
+			height: 25px;
+			margin-bottom: 0;
+		}
+		#cameras-address {
+			width: 50%;
+			margin-right: 20px;
+		}
+		#cameras-radius {
+			width: 70px;
+			margin-right: 5px;
+		}
+		.hint {
+			display: block;
+			font-size: 10px;
+			font-style: italic;
+			margin-left: 40px;
+		}
+		#map-container {
+			margin-top: 10px;
+			width: 100%;
+			min-height: 500px;
+			height: 85%;
+			border: 1px solid #EEEEEE;
+			background: #ededed;
+		}
+	}
+	.right {
+		right: 0;
+		padding: 0;
+		left: auto;	
+		h4 {
+			padding-left: 15px;
+			margin: 10px 0 -10px 0 ; 
+			height: 35px;
+			line-height: 35px;
+			font-size: 14px;
+			background-color: #2B343D;
+			color: white;
+		}
+		h5 {
+			font-size: 14px;
+			background-color: #D9DCE1;
+			height: 30px;
+			line-height: 30px;
+			padding-left: 15px;
+		}
+		input[type=checkbox] {
+			position: absolute;
+		}
+		label {
+			> span {
+				display: block;
+				margin-left: 20px;
+			}
+		}
+		select {
+			width:40%;
+			margin-left: 20px;
+		}
+		.camera-block {
+			padding-left: 15px;
+			margin-bottom: 20px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid #E0E0E0;
+		}
+		.camera-block:last-child {
+			padding-bottom: 0;
+			border-bottom: none;
+		}
+		.no-cameras-message {
+			padding-left: 15px;
+		}
+	}
+	.save-block {
+		width: 100%;
+		height: 70px;
+		bottom: 0;
+		background-color: #525963;
+		button { 
+			margin: 0 auto;
+			display: block;
+			margin-top: 20.5px;
+			background-color: #1587E0;
+			height: 30px;
+			padding: 5px 30px;
+			&:hover {
+				background-color: darken(#1587E0, 10%);
+			}
+		}
+	}
+}
+
+footer {
+	height: 30px;
+	display: block;
+	background-color: #2B343D;
+	color: white;
+	span {
+		display: block;
+		height: 30px;
+		line-height: 30px;
+		font-size: 10px;
+		vertical-align: middle;
+		text-align: center;
+		margin: 0 auto;
+	}
+}

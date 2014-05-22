@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="initial-scale = 1.0, maximum-scale=1.0, user-scalable = no, width=device-width" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	<title>Безопасный город / Создание события</title>
+	<!-- styles -->
+	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap-datetimepicker-min.css">
+	<link rel="stylesheet" href="dry/css/leaflet.css">
+	<link rel="stylesheet" href="dry/css/leaflet.draw.css">
+	<link rel="stylesheet/less" type="text/css" href="css/style.less">
+	<link rel="stylesheet/less" type="text/css" href="css/event.less">	
+	
+	<script src="dry/js/less.js"></script>
+	
+	
+</head>
+<body>
+	<header>
+		<div class="logo"></div>
+		<div class="message-block"></div>
+		<div class="user-info"></div>
+		<div class="breadcrumbs">
+			<a href="#" class="to-main-menu">Все события</a>
+			<a href="#" class="to-sub-menu active">Новое</a>
+		</div>
+	</header>
+	<div id="content" class="event-create">
+		<section class="left">
+			<h4>Событие</h4>
+			<div class="event-info table">
+				<div>
+					<label for="">Название</label>
+					<textarea id="event-name"></textarea>
+				</div>
+				<div>
+					<label for="">Описание</label>
+					<textarea id="event-description"></textarea>
+				</div>
+				<div>
+					<label for="">Класс</label>
+					<select id="event-class"></select>
+				</div>
+			</div>
+			<div class="event-date table">
+				<div>
+					<label for="">Дата</label>
+					<div>
+						<div class="">
+							<div id="event-date-overall" class="input-append datepicker-el">
+								<input data-format="yyyy-MM-dd" type="text"></input>
+								<span class="add-on">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+								</span>
+							</div>
+							<span>или</span>
+						</div>
+						<div>
+							<div class="input-wrapper">								
+								<span>c</span>
+								<div id="event-date-from" class="input-append datepicker-el">
+									<input data-format="yyyy-MM-dd" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+							<div class="input-wrapper">	
+								<span>по</span>
+								<div id="event-date-to" class="input-append datepicker-el">
+									<input data-format="yyyy-MM-dd" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>					
+					</div>
+				</div>
+				<div>
+					<label for="">Время</label>
+					<div>
+						<div>
+							<div class="input-wrapper">	
+								<span>c</span>
+								<div id="event-time-from" class="input-append timepicker-el">
+									<input data-format="hh:mm:ss" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+							<div class="input-wrapper">	
+								<span>по</span>
+								<div id="event-time-to" class="input-append timepicker-el">
+									<input data-format="hh:mm:ss" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>					
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="center">
+			<h4>Выбор камер</h4>
+			<label for="">Адрес</label>
+			<input type="text" id="cameras-address">
+			<label for="">Радиус</label>
+			<input type="number" id="cameras-radius" min="0" value="0"  step="0.1"><span>км</span>
+			<span class="hint">Введите адрес или отметьте маршрут с помощью инструмента на карте</span>
+			<div id="map-container"></div>
+		</section>
+		<section class="right">
+			<h4>Камеры по адресу (<span class="selected-cameras">0</span>)</h4>			
+		</section>
+		<div class="save-block">
+			<button class="button">Сохранить</button>
+		</div>
+	</div>
+	
+	<footer>
+		<span>2014</span>
+	</footer>
+	
+	<!-- route(polyline), address(marker), area(rect/polygon) -->
+	<article class="template section-info">
+		<h5>
+			<span></span>
+			<i class="info"></i>
+		</h5>
+		<div class="no-cameras-message">Не найдено ни одной камеры</div>
+	</article>
+	
+	<div class="template camera-block">
+		<input type="checkbox">
+		<label for="">
+			<span>1. Название камеры</span>
+			<span>Улица, дом</span>
+		</label>
+		<select name="" id="" class="block-in"></select>
+		<select name="" id="" class="supervisor"></select>
+	</div>
+	
+	<script src="dry/js/jquery.js"></script>
+	<script src="dry/js/moment.js"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
+	<script src="dry/js/jquery.geocomplete.js"></script>
+	<script src="dry/js/bootstrap-datetimepicker-min.js"></script>
+	<script src="dry/js/bootstrap-datetimepicker.ru.js"></script>
+	<script src="dry/js/leaflet.js"></script>
+	<script src="dry/js/leaflet.draw.js"></script>
+	<script src="js/event-create.js"></script>
+</body>
+</html>
