@@ -16,8 +16,7 @@
 	<link rel="stylesheet/less" type="text/css" href="css/style.less">
 	<link rel="stylesheet/less" type="text/css" href="css/event.less">	
 	
-	<script src="dry/js/less.js"></script>
-	
+	<script src="dry/js/less.js"></script>	
 	
 </head>
 <body>
@@ -44,7 +43,9 @@
 				</div>
 				<div>
 					<label for="">Класс</label>
-					<select id="event-class"></select>
+					<select id="event-class">
+						<option value="meeting" selected>Митинг</option>
+					</select>
 				</div>
 			</div>
 			<div class="event-date table">
@@ -123,6 +124,13 @@
 		</section>
 		<div class="save-block">
 			<button class="button">Сохранить</button>
+		</div>
+		<div class="popup-error">
+			<div>
+				<p>Недостаточно места в оперативном архиве</p>
+				<p>Уменьшите количество камер или сократите время мероприятия</p>				
+				<span class="popup-close"></span>				
+			</div>
 		</div>
 	</div>
 	
