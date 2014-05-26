@@ -1,28 +1,7 @@
 
 var map;
 (function($) {
-	'use strict';
-	
-	var marker_default_url = 'img/address-marker.svg';
-	var marker_selected_url = 'img/selected-address-marker.svg';
-	
-	var Address_Marker = L.Icon.extend({
-		options: {
-			shadowUrl: null,
-			iconAnchor: new L.Point(7, 7),
-			iconSize: new L.Point(15, 15),
-			iconUrl: marker_default_url
-		}
-	});
-	
-	var Selected_Address_Marker = L.Icon.extend({
-		options: {
-			shadowUrl: null,
-			iconAnchor: new L.Point(15, 15),
-			iconSize: new L.Point(30, 30),
-			iconUrl: marker_selected_url
-		}
-	});
+	'use strict';	
 	
 	function CityEvent(is_new) {
 		var that = this;
@@ -97,10 +76,12 @@ var map;
 			// if times are in the same day
 			if((date_end - date_start) / (1000 * 60 * 60) < 24) {
 				$('#event-date-overall').data('datetimepicker').setDate(date_start);
+				$('#event-date-from, #event-date-to').find('input').addClass('disabled');
 			}
 			else {
 				$('#event-date-from').data('datetimepicker').setLocalDate(date_start);
 				$('#event-date-to').data('datetimepicker').setLocalDate(date_end);
+				$('#event-date-overall').find('input').addClass('disabled');
 			}
 			$('#event-time-from').data('datetimepicker').setLocalDate(date_start);
 			$('#event-time-to').data('datetimepicker').setLocalDate(date_end);
@@ -182,14 +163,25 @@ var map;
 		}
 	};
 	
-	function CityMap() {
-		this.init();
-	} 
-	CityMap.prototype = {
-		constructor: CityMap,
-		init: function() {
-			var that = this;
-			this.draw_options = {
+	function CityMap() {		
+		this.options = {
+			Address_Marker: L.Icon.extend({
+				options: {
+					shadowUrl: null,
+					iconAnchor: new L.Point(7, 7),
+					iconSize: new L.Point(15, 15),
+					iconUrl: 'img/address-marker.svg',
+				}
+			}),
+			Selected_Address_Marker: L.Icon.extend({
+				options: {
+					shadowUrl: null,
+					iconAnchor: new L.Point(15, 15),
+					iconSize: new L.Point(30, 30),
+					iconUrl: 'img/selected-address-marker.svg',
+				}
+			}),
+			draw: {
 				stroke: true,
 				color: '#f00',
 				weight: 3,
@@ -197,7 +189,14 @@ var map;
 				fill: '#f00',
 				fillOpacity: 0.2, 
 				clickable: true
-			};
+			}
+		};
+		this.init();
+	} 
+	CityMap.prototype = {
+		constructor: CityMap,
+		init: function() {
+			var that = this;
 			this.markers = [];
 			this.map = L.map('map-container').setView([59.94, 30.35], 13);
 			L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
@@ -218,21 +217,21 @@ var map;
 							color: '#b00b00',
 							timeout: 1000
 						},
-						shapeOptions: this.draw_options,
+						shapeOptions: this.options.draw,
 						showArea: true
 					},
 					polyline: {
 						metric: false,
-						shapeOptions: $.extend({}, this.draw_options, {
+						shapeOptions: $.extend({}, that.options.draw, {
 							fill: false
 						}),
 					},
 					circle: false,
 					rectangle: {
-						shapeOptions: this.draw_options,
+						shapeOptions: this.options.draw,
 					},
 					marker: {
-						icon: new Address_Marker()
+						icon: new that.options.Address_Marker()
 					}
 				},
 				edit: {
@@ -261,24 +260,25 @@ var map;
 				}
 			});
 			
-			$('.right').on('hover', '.info', function() {
+			$('.right').on('hover', '.section-info', function() {
 				var $this = $(this);
-				var layer = $this.parents('.section-info').data('layer');
+				var layer = $this.data('layer');
 				// set default
 				$('svg path').attr('stroke-dasharray', "");
 				for (var i = 0; i < that.markers.length; i++) {
-					that.markers[i].setIcon(new Address_Marker());
+					that.markers[i].setIcon(new that.options.Address_Marker());
 				}
 				// select marker or svg
 				if (!$this.hasClass('active-info')) {		
 					if (layer._icon) {
-						layer.setIcon(new Selected_Address_Marker());
-						layer.fire('click');
+						layer.setIcon(new that.options.Selected_Address_Marker());
+						//layer.fire('click');
 					}
 					else if (layer._container) {
 						var svg = layer._container;
 						$(svg).find('path').attr('stroke-dasharray', "10,10");
-					}					
+					}
+					layer.openPopup();
 					$('.active-info').removeClass('active-info');
 					$this.addClass('active-info');
 				}
@@ -292,11 +292,11 @@ var map;
 				that.map.setView(coords);
 				var radius = $('#cameras-radius').val();
 				if (radius == 0) {					
-					var marker = L.marker(coords, {icon: new Address_Marker()}).addTo(that.drawnItems);
+					var marker = L.marker(coords, {icon: new that.options.Address_Marker()}).addTo(that.drawnItems);
 					that.build_section_info('marker', marker);
 				}
 				else if ($.isNumeric(radius)) {
-					var circle = L.circle(coords, radius * 1000, this.draw_options).addTo(that.drawnItems);
+					var circle = L.circle(coords, radius * 1000, that.options.draw).addTo(that.drawnItems);
 				}
 				that.build_section_info('circle', circle);
 			});		
@@ -315,15 +315,18 @@ var map;
 				case 'circle':
 					header = 'Выделенная область';
 					clazz = 'circle';
+					layer.bindPopup(header);
 					break;
 				case 'polygon':
 				case 'rectangle':
 					header = 'Выделенная область';
-					clazz = 'area';
+					clazz = 'area';					
+					layer.bindPopup(header);
 					break;
 				case 'polyline':
 					header = 'Маршрут';
-					clazz = 'route';
+					clazz = 'route';							
+					layer.bindPopup(header);
 					break;
 			}
 			template.addClass(clazz).find('h5 > span').text(header);
@@ -389,26 +392,27 @@ var map;
 			return data;
 		},
 		fit_data_geo: function(geo) {
+			var that = this;
 			var i, layer;
 			for (i = 0; i < geo.areas.length; i++) {
-				layer = L.polygon(geo.areas[i], this.draw_options).addTo(this.drawnItems);
+				layer = L.polygon(geo.areas[i], this.options.draw).addTo(this.drawnItems);
 				this.build_section_info('polygon', layer);
 			}
 			for (i = 0; i < geo.routes.length; i++) {
 				layer = L.polyline(
 					geo.routes[i], 
-					$.extend({}, this.draw_options, {
+					$.extend({}, that.options.draw, {
 						fill: false
 					})
 				).addTo(this.drawnItems);
 				this.build_section_info('polyline', layer);
 			}
 			for (i = 0; i < geo.circles.length; i++) {
-				layer = L.circle([geo.circles[i].lat, geo.circles[i].lng], geo.circles[i].radius, this.draw_options).addTo(this.drawnItems);
+				layer = L.circle([geo.circles[i].lat, geo.circles[i].lng], geo.circles[i].radius, that.options.draw).addTo(this.drawnItems);
 				this.build_section_info('circle', layer);
 			}
 			for (i = 0; i < geo.addresses.length; i++) {
-				layer = L.marker([geo.addresses[i].lat, geo.addresses[i].lng], {icon: new Address_Marker()}).addTo(this.drawnItems);
+				layer = L.marker([geo.addresses[i].lat, geo.addresses[i].lng], {icon: new that.options.Address_Marker()}).addTo(this.drawnItems);
 				this.build_section_info('marker', layer);
 			}
 		}
