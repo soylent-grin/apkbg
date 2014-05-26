@@ -37,6 +37,15 @@ var map;
 				$('#event-date-overall').find('input').removeClass('disabled');
 			}
 		});
+		// set max and min date according to period
+		$("#event-date-from").on('changeDate', function () {		
+			var start_date = $('#event-date-from').data('datetimepicker').getDate();
+			$("#event-date-to").data('datetimepicker').setStartDate(start_date);
+		});
+		$("#event-date-to").on('changeDate', function () {
+			var end_date = $('#event-date-to').data('datetimepicker').getDate();
+			$("#event-date-from").data('datetimepicker').setEndDate(end_date);
+		});
 		
 		// minor events
 		$('.save-block').on('click', ".button", function () {
@@ -126,10 +135,15 @@ var map;
 				$('#event-time-to input').addClass('error');
 				flag = false;
 			}
+			if ($('#event-time-to').data('datetimepicker').getDate() < $('#event-time-from').data('datetimepicker').getDate()) {
+				$('#event-time-to, #event-time-from').find('input').addClass('error');
+				flag = false;
+			}
 			if ($('.section-info:not(.template)').length == 0) {
 				$('#cameras-address').addClass('error');
 				flag = false;
 			}
+			
 			if (!this.is_valid_cameras()) {
 				$(".popup-error").show();
 				flag = false;
@@ -137,7 +151,8 @@ var map;
 			return flag;
 		},
 		is_valid_cameras: function() {
-			return true;
+			// dummy for camera validation
+			return $('.section-info:not(.template)').length < 5;
 		},
 		get_period: function() {
 			var period = {};
@@ -149,16 +164,19 @@ var map;
 				date_start = $('#event-date-from').data('datetimepicker').getDate();
 				date_end = $('#event-date-to').data('datetimepicker').getDate();
 			}		
-			
+
 			// get milliseconds from the day start
-			time_start = new Date($('#event-time-from').data('datetimepicker').getLocalDate()).getTime() - new Date().setHours(0, 0, 0, 0);
-			time_end = new Date($('#event-time-to').data('datetimepicker').getLocalDate()).getTime() - new Date().setHours(0, 0, 0, 0);
-			
+			time_start = $('#event-time-from').data('datetimepicker').getLocalDate().getTime();
+			time_start = new Date(time_start) - new Date(time_start).setHours(0, 0, 0, 0);
+
+			time_end = $('#event-time-to').data('datetimepicker').getLocalDate().getTime();
+			time_end = new Date(time_end) - new Date(time_end).setHours(0, 0, 0, 0);
+
 			// finally
 			period = {
 				start: date_start.setHours(0,0,0,0) + time_start,
 				end: date_end.setHours(0,0,0,0) + time_end
-			}
+			};
 			return period;
 		}
 	};
@@ -333,7 +351,7 @@ var map;
 			template.data("layer", layer);
 			template.attr('data-leaflet-id', layer._leaflet_id);
 			console.log(layer);
-			template.appendTo('section.right');
+			template.appendTo('section.right > .cameras-list');
 		},
 		setPopupAddress: function(layer) {
 			var latlng = new google.maps.LatLng(layer._latlng.lat, layer._latlng.lng);
@@ -393,10 +411,11 @@ var map;
 		},
 		fit_data_geo: function(geo) {
 			var that = this;
-			var i, layer;
+			var i, layer, counter = 0;
 			for (i = 0; i < geo.areas.length; i++) {
 				layer = L.polygon(geo.areas[i], this.options.draw).addTo(this.drawnItems);
 				this.build_section_info('polygon', layer);
+				counter++;
 			}
 			for (i = 0; i < geo.routes.length; i++) {
 				layer = L.polyline(
@@ -406,15 +425,19 @@ var map;
 					})
 				).addTo(this.drawnItems);
 				this.build_section_info('polyline', layer);
+				counter++;
 			}
 			for (i = 0; i < geo.circles.length; i++) {
 				layer = L.circle([geo.circles[i].lat, geo.circles[i].lng], geo.circles[i].radius, that.options.draw).addTo(this.drawnItems);
 				this.build_section_info('circle', layer);
+				counter++;
 			}
 			for (i = 0; i < geo.addresses.length; i++) {
 				layer = L.marker([geo.addresses[i].lat, geo.addresses[i].lng], {icon: new that.options.Address_Marker()}).addTo(this.drawnItems);
 				this.build_section_info('marker', layer);
+				counter++;
 			}
+			$('.selected-cameras').text(counter);
 		}
 	}
 	$(document).ready(function() {

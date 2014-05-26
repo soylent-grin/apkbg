@@ -7,48 +7,30 @@
 	<meta name="viewport" content="initial-scale = 1.0, maximum-scale=1.0, user-scalable = no, width=device-width" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 
-	<title>Безопасный город / Создание события</title>
+	<title>Безопасный город | архив мероприятий</title>
 	<!-- styles -->
 	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap-datetimepicker-min.css">
-	<link rel="stylesheet" href="dry/css/leaflet.css">
-	<link rel="stylesheet" href="dry/css/leaflet.draw.css">
 	<link rel="stylesheet/less" type="text/css" href="css/style.less">
 	<link rel="stylesheet/less" type="text/css" href="css/event.less">	
 	
 	<script src="dry/js/less.js"></script>	
 	
 </head>
-<body>
+<body class="event-overview">
 	<header>
 		<div class="logo"></div>
 		<div class="message-block"></div>
 		<div class="user-info"></div>
 		<div class="breadcrumbs">
-			<a href="#" class="to-main-menu">Все события</a>
-			<a href="#" class="to-sub-menu active">Новое</a>
+			<a href="" class="to-main-menu active">Все события</a>
+			<a href="event.html" class="add-sub-menu" title="Добавить событие">&nbsp;</a>
 		</div>
 	</header>
-	<div id="content" class="event-create">
-		<section class="left">
-			<h4>Событие</h4>
-			<div class="event-info table">
-				<div>
-					<label for="">Название</label>
-					<textarea id="event-name"></textarea>
-				</div>
-				<div>
-					<label for="">Описание</label>
-					<textarea id="event-description"></textarea>
-				</div>
-				<div>
-					<label for="">Класс</label>
-					<select id="event-class">
-						<option value="meeting" selected>Мимимитинг</option>
-					</select>
-				</div>
-			</div>
-			<div class="event-date table">
+	<div id="content">
+		<section class="search">
+			<h3>Поиск события</h3>
+			<div class="event-date event-search table">
 				<div>
 					<label for="">Дата</label>
 					<div>
@@ -108,35 +90,106 @@
 						</div>					
 					</div>
 				</div>
+				<div>
+					<label for="">Наименование</label>
+					<input type="text" class="search-event-name">
+				</div>
+				<div>
+					<label for="">Адрес</label>
+					<input type="text" class="search-event-address">
+				</div>
+				<div>
+					<div></div>
+					<div>
+						<button class="button blue button-search">Найти</button>
+						<a href="" class="clean-search">Очистить запрос</a>
+					</div>
+				</div>
 			</div>
 		</section>
-		<section class="center">
-			<h4>Выбор камер</h4>
-			<label for="">Адрес</label>
-			<input type="text" id="cameras-address">
-			<label for="">Радиус</label>
-			<input type="number" id="cameras-radius" min="0" value="0"  step="0.1"><span>км</span>
-			<span class="hint">Введите адрес или отметьте маршрут с помощью инструмента на карте</span>
-			<div id="map-container"></div>
-		</section>
-		<section class="right">
-			<h4>Камеры по адресу (<span class="selected-cameras">0</span>)</h4>	
-			<div class="cameras-list"></div>	
-			<h4>Фотоматериалы (<span class="selected-photo">0</span>)</h4>	
-			<div class="photo-list"></div>		
-		</section>
-		<div class="save-block">
-			<button class="button">Сохранить</button>
-		</div>
-		<div class="popup-error">
-			<div>
-				<p>Недостаточно места в оперативном архиве</p>
-				<p>Уменьшите количество камер или сократите время мероприятия</p>				
-				<span class="popup-close"></span>				
+		<section class="event-list">
+			<div class="list">
+				<div class="list-header">
+					<div>Дата</div>
+					<div>Время</div>
+					<div>Наименование события</div>
+					<div>Адрес</div>
+					<div>Кол-во подключенных камер</div>
+				</div>
+				<div class="event-row" data-name="Марш миллионов" data-address="Невский пр., 33" data-address="Невский пр., 33" data-start="1398243600000" data-end="1398243708000">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>
+				<div class="event-row" data-name="Марш миллионов" data-address="Невский пр., 33" data-address="Невский пр., 33" data-start="1398243600000" data-end="1398243708000">
+					<div>23.04.14</div>
+					<div>13:00 - 15:00</div>
+					<div>Марш миллионов</div>
+					<div>Невский пр., 33</div>
+					<div>18</div>
+				</div>				
 			</div>
-		</div>
-	</div>
-	
+			<div class="no-results">Не найдено ни одного события</div>
+		</section>		
+	</div>	
 	<footer>
 		<span>2014</span>
 	</footer>
@@ -162,12 +215,8 @@
 	
 	<script src="dry/js/jquery.js"></script>
 	<script src="dry/js/moment.js"></script>
-	<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
-	<script src="dry/js/jquery.geocomplete.js"></script>
 	<script src="dry/js/bootstrap-datetimepicker-min.js"></script>
 	<script src="dry/js/bootstrap-datetimepicker.ru.js"></script>
-	<script src="dry/js/leaflet.js"></script>
-	<script src="dry/js/leaflet.draw.js"></script>
-	<script src="js/event-create.js"></script>
+	<script src="js/event-overview.js"></script>
 </body>
 </html>
