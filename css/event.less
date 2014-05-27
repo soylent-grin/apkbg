@@ -6,12 +6,12 @@
   transform: translateY(-50%);
 }
 
-header {
-	> * {
-		height: 30px;
-		display: inline-block;
-	} 
+#content {
+	> * {		
+		position: absolute;
+	}	
 	> .breadcrumbs {
+		position: static;
 		display: block;
 		background-color: #2B343D;
 		vertical-align: middle;
@@ -22,10 +22,7 @@ header {
 			display: inline-block;
 			line-height: 30px;
 			text-decoration: none;
-			color: #3E9CE4;
-			&:hover {
-				color: lighten(#3E9CE4, 20%);
-			}
+			color: #cae2f6;
 			&:before {
 				content: '\2192';
 				padding-right: 10px;
@@ -35,9 +32,7 @@ header {
 			}
 		}
 		a.active {
-			&:hover {
-				color: #3E9CE4;
-			}
+			cursor: default;
 		}
 		a.to-main-menu {
 			padding: 0 10px;
@@ -56,25 +51,6 @@ header {
 	}
 }
 
-#content {
-	height: -moz-calc(~"100% - 90px");
-	height: -webkit-calc(~"100% - 90px");
-	height: -o-calc(~"100% - 90px");
-	height: calc(~"100% - 90px");
-	overflow-y: auto;
-	position: relative;
-	> * {		
-		position: absolute;
-	}
-}
-
-.datepicker-el, .timepicker-el {
-	display: inline-block;
-	input {
-		width: 90px;
-	}
-}
-
 .input-wrapper {
 	display: inline-block;
 	vertical-align: middle;
@@ -83,19 +59,6 @@ header {
 		width: 15px;
 		float: left;
 		margin-right: 5px;
-	}
-}
-
-input.disabled {
-	background-color: #F0F0F0;
-}
-
-.input-append .add-on {
-	height: 25px;
-	cursor: pointer;
-	line-height: 15px;
-	&:hover {
-		background-color: darken(#eee, 10%);
 	}
 }
 
@@ -111,42 +74,10 @@ input.disabled {
     background-size:100%;
     background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><g><rect x='5%' y='0' width='90%' height='20' fill='#f9b000' style='-webkit-svg-shadow: 0 2px 3px rgba(0,0,0,0.6);'></rect></g><svg x='50%' y='20' style='overflow:visible;'><polygon points='-10,0 10,0 0,10' fill='#f9b000' style='-webkit-svg-shadow: 0 2px 3px rgba(0,0,0,0.6);'></polygon></svg></svg>");
 }
-
-.event-date {
-	label {
-		width: 80px;
-	}
-	span {
-		vertical-align: top;
-	}
-	.datepicker-el, .timepicker-el {
-		margin-bottom: 20px;
-		margin-right: 10px;
-		vertical-align: middle;
-	}
-	#event-date-overall {
-		margin-left: 20px;
-	}
-}		
-
-footer {
-	height: 30px;
-	display: block;
-	background-color: #2B343D;
-	color: white;
-	span {
-		display: block;
-		height: 30px;
-		line-height: 30px;
-		font-size: 10px;
-		vertical-align: middle;
-		text-align: center;
-		margin: 0 auto;
-	}
-}
+	
 
 // styles for event.html
-.event-create {	
+.event-single {	
 	h4 {
 		font-size: 14px;
 		margin: 5px 10px 10px 0;
@@ -154,11 +85,11 @@ footer {
 	.left, .right, .center{
 		width: 25%;	
 		height: 100%;
-		left: 0;	
-		height: -moz-calc(~"100% - 70px");
-		height: -webkit-calc(~"100% - 70px");
-		height: -o-calc(~"100% - 70px");
-		height: calc(~"100% - 70px");
+		left: 0;		
+		height: -moz-calc(~"100% - 100px");
+		height: -webkit-calc(~"100% - 100px");
+		height: -o-calc(~"100% - 100px");
+		height: calc(~"100% - 100px");
 		overflow-y: auto;
 		position: relative;
 	}
@@ -237,13 +168,16 @@ footer {
 		padding: 0;
 		left: auto;	
 		h4 {
+			margin: 0;
 			padding-left: 15px;
-			margin: 10px 0 -10px 0 ; 
 			height: 35px;
 			line-height: 35px;
 			font-size: 14px;
 			background-color: #2B343D;
 			color: white;
+		}
+		h4:first-child {			
+			margin: 10px 0 -10px 0 ; 
 		}
 		h5 {
 			font-size: 14px;
@@ -265,6 +199,24 @@ footer {
 			width:40%;
 			margin-left: 20px;
 		}
+		.icon-download {
+			display: none;
+			float: right; 
+			background-color: #1587E0;
+			background-position: center;
+			background-image: url('../img/download.png');
+			margin-top: 0;
+			margin-right: 30px;
+			height: 35px;
+			width: 60px;
+			cursor: pointer;
+			&:hover {
+				background-color: darken(#1587E0, 10%); 	
+			}
+		}
+		.cameras-list {
+			margin-bottom: 20px;
+		}
 		.camera-block {
 			padding-left: 15px;
 			margin-bottom: 20px;
@@ -274,6 +226,18 @@ footer {
 		.camera-block:last-child {
 			padding-bottom: 0;
 			border-bottom: none;
+		}
+		.photos-list-header, 
+		.photos-list {
+			display: none;
+		}
+		.photos-list {	
+			padding: 20px;
+			img {
+				cursor: pointer;
+				vertical-align: text-top;
+				width: 32%;
+			}
 		}
 		.no-cameras-message {
 			padding-left: 15px;
@@ -336,9 +300,38 @@ footer {
 	}
 }
 
+.event-single.event-existing {
+	.left, .right, .center{
+		height: -moz-calc(~"100% - 30px");
+		height: -webkit-calc(~"100% - 30px");
+		height: -o-calc(~"100% - 30px");
+		height: calc(~"100% - 30px");
+	}
+	.left {
+		input,
+		select, 
+		textarea,
+		.add-on {
+			pointer-events: none;
+		}
+	}
+	.center input[type=number] {
+		pointer-events: none;	 
+	}
+	.right i.icon-download,
+	.photos-list-header, 
+	.photos-list {
+		display: block;
+	}
+	.save-block,
+	.hint{
+		display: none;
+	}
+}
+
 // styles for event-overview.html
 .event-overview {
-	header > .breadcrumbs {
+	#content > .breadcrumbs {
 		a.to-main-menu {
 			cursor: default;
 			background: none;						

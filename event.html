@@ -13,6 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap-datetimepicker-min.css">
 	<link rel="stylesheet" href="dry/css/leaflet.css">
 	<link rel="stylesheet" href="dry/css/leaflet.draw.css">
+	<link rel="stylesheet" href="dry/css/colorbox.css">
 	<link rel="stylesheet/less" type="text/css" href="css/style.less">
 	<link rel="stylesheet/less" type="text/css" href="css/event.less">	
 	
@@ -24,12 +25,12 @@
 		<div class="logo"></div>
 		<div class="message-block"></div>
 		<div class="user-info"></div>
+	</header>
+	<div id="content" class="event-single">		
 		<div class="breadcrumbs">
-			<a href="#" class="to-main-menu">Все события</a>
+			<a href="event-overview.html" class="to-main-menu">Все события</a>
 			<a href="#" class="to-sub-menu active">Новое</a>
 		</div>
-	</header>
-	<div id="content" class="event-create">
 		<section class="left">
 			<h4>Событие</h4>
 			<div class="event-info table">
@@ -120,10 +121,17 @@
 			<div id="map-container"></div>
 		</section>
 		<section class="right">
-			<h4>Камеры по адресу (<span class="selected-cameras">0</span>)</h4>	
+			<h4 class="cameras-list-header">Камеры по адресу (<span class="selected-cameras">0</span>) <i class="icon-download" title = "Загрузить"></i></h4>	
 			<div class="cameras-list"></div>	
-			<h4>Фотоматериалы (<span class="selected-photo">0</span>)</h4>	
-			<div class="photo-list"></div>		
+			<h4 class="photos-list-header">Фотоматериалы (<span class="selected-photo">6</span>) <i class="icon-download" title = "Загрузить"></i></h4>	
+			<div class="photos-list">
+				<a href="content/1.jpg" class="img-group"><img src="content/1.jpg" alt=""></a>
+				<a href="content/2.jpg" class="img-group"><img src="content/2.jpg" alt=""></a>
+				<a href="content/3.jpg" class="img-group"><img src="content/3.jpg" alt=""></a>
+				<a href="content/4.jpg" class="img-group"><img src="content/4.jpg" alt=""></a>
+				<a href="content/5.jpg" class="img-group"><img src="content/5.jpg" alt=""></a>
+				<a href="content/6.jpg" class="img-group"><img src="content/6.jpg" alt=""></a>
+			</div>		
 		</section>
 		<div class="save-block">
 			<button class="button">Сохранить</button>
@@ -168,6 +176,7 @@
 	<script src="dry/js/bootstrap-datetimepicker.ru.js"></script>
 	<script src="dry/js/leaflet.js"></script>
 	<script src="dry/js/leaflet.draw.js"></script>
-	<script src="js/event-create.js"></script>
+	<script src="dry/js/jquery.colorbox.js"></script>
+	<script src="js/event-single.js"></script>
 </body>
 </html>

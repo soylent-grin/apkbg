@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="initial-scale = 1.0, maximum-scale=1.0, user-scalable = no, width=device-width" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	<title>Безопасный город | АРМ видеонаблюдения</title>
+	<!-- styles -->
+	<link rel="stylesheet/less" type="text/css" href="css/style.less">
+	<link rel="stylesheet/less" type="text/css" href="css/arm-video.less">	
+	
+	<script src="dry/js/less.js"></script>	
+	
+</head>
+<body class="arm-video">
+	<header>
+		<div class="logo"></div>
+		<div class="message-block"></div>
+		<div class="user-info"></div>
+	</header>
+	<div id="content">	
+		<section class="video-block multiple">
+			<div class="single-container">
+				<img src="content/1.jpg" alt="">
+				<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+			</div>
+			<div class="multiple-container">
+				<div class="video-element">
+					<img src="content/1.jpg" alt="">
+					<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+				</div>				
+				<div class="video-element">
+					<img src="content/2.jpg" alt="">
+					<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+				</div>				
+				<div class="video-element">
+					<img src="content/3.jpg" alt="">
+					<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+				</div>				
+				<div class="video-element">
+					<img src="content/4.jpg" alt="">
+					<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+				</div>				
+				<div class="video-element">
+					<img src="content/5.jpg" alt="">
+					<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+				</div>				
+				<div class="video-element">
+					<img src="content/6.jpg" alt="">
+					<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+				</div>				
+				<div class="video-element">
+					<img src="content/1.jpg" alt="">
+					<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+				</div>
+			</div>			
+			
+		</section>
+		<section class="photo-block">
+			<h4>Фотоматериалы</h4>
+			<div class="photo-gallery"></div>
+			<div class="no-photo-message">Не сделано ни одного скриншота</div>
+		</section>
+		<section class="toolbar">
+			<div class="instrument active rectangle" dat-instrument="rect"></div>
+			<div class="instrument screenshot" dat-instrument="screenshot"></div>
+		</section>
+	</div>	
+	<footer>
+		<span>2014</span>
+	</footer>
+	
+	<div class="video-element template">
+		<img src="content/1.jpg" alt="">
+		<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+	</div>
+	<!--
+	<div class="video-element template">
+		<iframe src="//www.youtube.com/embed/CtztrcGkCBw?controls=0" frameborder="0" allowfullscreen></iframe>
+		<div class="camera-info"><span class="address">Адрес</span><i class="expand"></i></div>
+	</div>
+	-->
+	
+	<script src="dry/js/jquery.js"></script>
+	<script src="js/arm-video.js"></script>
+</body>
+</html>

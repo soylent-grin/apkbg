@@ -57,10 +57,17 @@ var map;
 		$('body').on('click', '.error', function() {
 			$(this).removeClass('error');
 		});
-		this.map = new CityMap();
+		this.map = new CityMap(is_new);
 		if (!is_new) {
+			$('#content').addClass('event-existing');
 			this.load_data();
 		}
+		// initialize lightbox
+		$(".photos-list a").colorbox({
+			rel:'img-group',
+			maxWidth: "800",
+			maxHeight: "800",
+		});
 	}
 	
 	CityEvent.prototype = {
@@ -181,7 +188,8 @@ var map;
 		}
 	};
 	
-	function CityMap() {		
+	function CityMap(is_new) {
+		this.is_new = is_new;
 		this.options = {
 			Address_Marker: L.Icon.extend({
 				options: {
@@ -209,11 +217,11 @@ var map;
 				clickable: true
 			}
 		};
-		this.init();
+		this.init(is_new);
 	} 
 	CityMap.prototype = {
 		constructor: CityMap,
-		init: function() {
+		init: function(is_new) {
 			var that = this;
 			this.markers = [];
 			this.map = L.map('map-container').setView([59.94, 30.35], 13);
@@ -225,38 +233,39 @@ var map;
 			
 			this.drawnItems = new L.FeatureGroup();
 			this.map.addLayer(this.drawnItems);
-
-			var drawControl = new L.Control.Draw({
-				draw: {
-					position: 'topleft',
-					polygon: {
-						allowIntersection: false,
-						drawError: {
-							color: '#b00b00',
-							timeout: 1000
+			if (is_new) {
+				var drawControl = new L.Control.Draw({
+					draw: {
+						position: 'topleft',
+						polygon: {
+							allowIntersection: false,
+							drawError: {
+								color: '#b00b00',
+								timeout: 1000
+							},
+							shapeOptions: this.options.draw,
+							showArea: true
 						},
-						shapeOptions: this.options.draw,
-						showArea: true
+						polyline: {
+							metric: false,
+							shapeOptions: $.extend({}, that.options.draw, {
+								fill: false
+							}),
+						},
+						circle: false,
+						rectangle: {
+							shapeOptions: this.options.draw,
+						},
+						marker: {
+							icon: new that.options.Address_Marker()
+						}
 					},
-					polyline: {
-						metric: false,
-						shapeOptions: $.extend({}, that.options.draw, {
-							fill: false
-						}),
-					},
-					circle: false,
-					rectangle: {
-						shapeOptions: this.options.draw,
-					},
-					marker: {
-						icon: new that.options.Address_Marker()
+					edit: {
+						featureGroup: this.drawnItems
 					}
-				},
-				edit: {
-					featureGroup: this.drawnItems
-				}
-			});
-			this.map.addControl(drawControl);
+				});
+				this.map.addControl(drawControl);
+			}
 
 			this.map.on('draw:created', function (e) {
 				var type = e.layerType,
@@ -309,14 +318,19 @@ var map;
 				var coords = L.latLng(result.geometry.location.k, result.geometry.location.A)
 				that.map.setView(coords);
 				var radius = $('#cameras-radius').val();
-				if (radius == 0) {					
-					var marker = L.marker(coords, {icon: new that.options.Address_Marker()}).addTo(that.drawnItems);
-					that.build_section_info('marker', marker);
+				if (that.is_new) {					
+					if (radius == 0) {					
+						var marker = L.marker(coords, {icon: new that.options.Address_Marker()}).addTo(that.drawnItems);
+						that.build_section_info('marker', marker);
+					}
+					else if ($.isNumeric(radius)) {
+						var circle = L.circle(coords, radius * 1000, that.options.draw).addTo(that.drawnItems);
+					}
+					that.build_section_info('circle', circle);
 				}
-				else if ($.isNumeric(radius)) {
-					var circle = L.circle(coords, radius * 1000, that.options.draw).addTo(that.drawnItems);
+				else {
+					L.setView(coords);
 				}
-				that.build_section_info('circle', circle);
 			});		
 		},
 		build_section_info: function(type, layer) {

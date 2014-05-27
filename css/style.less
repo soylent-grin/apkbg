@@ -93,6 +93,10 @@ html,body {
 	.box-sizing;
 }
 
+.template {
+	display: none;
+}
+
 html,body,button,input,textarea,select {
 	font-size: 12px;
 	font-family: Verdana, 'Segoe UI', 'Lucida Grande', Arial, Helvetica, sans-serif;
@@ -209,6 +213,86 @@ i.info {
 	background-image: url('../img/button-detail-sprite.png');
 	&:hover {
 		background-position-y: 22px; 
+	}
+}
+
+header {
+	> * {
+		height: 30px;
+		display: inline-block;
+	} 
+}
+
+#content {
+	height: -moz-calc(~"100% - 60px");
+	height: -webkit-calc(~"100% - 60px");
+	height: -o-calc(~"100% - 60px");
+	height: calc(~"100% - 60px");
+	overflow-y: auto;
+	position: relative;	
+}
+
+.datepicker-el, .timepicker-el {
+	display: inline-block;
+	input {
+		width: 90px;
+	}
+}
+
+.input-wrapper {
+	display: inline-block;
+	vertical-align: middle;
+	> span {
+		text-align: right;
+		width: 15px;
+		float: left;
+		margin-right: 5px;
+	}
+}
+
+input.disabled {
+	background-color: #F0F0F0;
+}
+
+.input-append .add-on {
+	height: 25px;
+	cursor: pointer;
+	line-height: 15px;
+	&:hover {
+		background-color: darken(#eee, 10%);
+	}
+}
+
+.event-date {
+	label {
+		width: 80px;
+	}
+	span {
+		vertical-align: top;
+	}
+	.datepicker-el, .timepicker-el {
+		margin-bottom: 20px;
+		margin-right: 10px;
+		vertical-align: middle;
+	}
+	#event-date-overall {
+		margin-left: 20px;
+	}
+}		
+
+footer {
+	height: 30px;
+	display: block;
+	background-color: #2B343D;
+	color: white;
+	span {
+		display: block;
+		height: 30px;
+		line-height: 30px;
+		font-size: 10px;
+		vertical-align: middle;
+		text-align: center;
+		margin: 0 auto;
 	}
 }
 
