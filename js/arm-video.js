@@ -21,8 +21,18 @@
 			
 			$('.video-block').on('click', '.expand', function() {
 				var container = $('.video-block');
-				$('.video-block').toggleClass('single').toggleClass('multiple');
-				container.hasClass('single') ? that.options.mode = 'single' : that.options.mode = 'multiple';
+				if ($(this).parents('.multiple-container').length > 0) {
+					// expand one, turn on the single mode
+					that.options.mode = 'single';
+					var data = $(this).parents('.video-element').find('img').attr('src');
+					$('.single-container img').attr('src', data);
+					$('.video-block').addClass('single').removeClass('multiple');
+				}
+				else {
+					// roll up one, turn on the multiple mode
+					that.options.mode = 'multiple';
+					$('.video-block').removeClass('single').addClass('multiple');
+				}
 				that.calculate_video_position();
 			});
 			
@@ -38,6 +48,7 @@
 			////////
 		},
 		calculate_video_position: function () {
+			console.log('Repainting');
 			var count = $('.multiple-container .video-element').length;
 			var percentage;
 			var ratio = 16/9
@@ -50,10 +61,10 @@
 				});
 			}
 			if (this.options.mode == 'single') {
-				percentage = Math.floor(100/(Math.floor(count/3)));
+				percentage = Math.floor(100/(Math.ceil(count/2)));
 				$('.video-element').css({
 					width: 50 + "%",
-					height: 33 + "%"
+					height: percentage + "%"
 				});
 			}
 		}

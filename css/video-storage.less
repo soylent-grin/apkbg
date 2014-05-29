@@ -1,0 +1,325 @@
+.video-storage {
+	position: relative;
+	.content-header {
+		background-color: #2B343D;
+		height: 40px;
+		> * {
+			float: left;
+			height: 40px;		
+			vertical-align: top;
+		}
+		.action {
+			width: 50px;
+			margin-right: 5px;
+			background-color: #1587E0;
+			background-position: center;
+			background-image: url('http://localhost/apkbg/css/../img/download.png');
+			background-repeat: no-repeat;
+			margin-top: 0;
+			width: 60px;
+			cursor: pointer;
+			&:hover {
+				background-color: lighten(#1587E0, 10%);
+			}
+		}
+		.action:first-child {
+			margin-left: 30px;
+		}
+		.search-block {
+			float: none;
+			text-align: center;
+			line-height: 40px;
+			.input-append {
+				vertical-align: top;
+				line-height: 40px;
+				display: inline-block;
+				margin: 0;
+				width: 30%;
+				> * {
+					vertical-align: middle;
+				}
+				input {
+					width: 100%;
+				}
+				.add-on {
+					display: inline-block;
+					height: 25px;
+					width: 23px;
+					line-height: 25px;
+					margin-left: -1px;
+					border: 1px solid #c8c5c5;
+					border-radius: 0;
+					background-image: url('../img/search.png');
+					background-repeat: no-repeat;
+					background-position: center;
+				}
+			}
+		}
+		.extended-search {
+			margin-left: 30px;
+			color: white;
+		}
+	}
+	.query-list,
+	.query-form {
+		position: absolute;
+		top: 40px;
+		bottom: 0;
+		left: 0;
+		width: 30%;
+		height: -moz-calc(~"100% - 40px");
+		height: -webkit-calc(~"100% - 40px");
+		height: -o-calc(~"100% - 40px");
+		height: calc(~"100% - 40px"); 
+		overflow: auto;
+	}
+	.query-list {
+
+		border-top: 1px solid #FBFBFB;
+		box-shadow: 2px 0 2px rgba(0,0,0,0.1);
+		z-index: 10;
+		.query-list-header {
+			background-color: #2B343D;
+			height: 30px;
+			line-height: 30px;
+			a {
+				color: white;
+				display: inline-block;
+				vertical-align: top;
+				padding: 0 10px;
+				height: 30px;
+				border-right: 1px solid #aaa;
+				&:hover {
+					text-decoration: none;
+					background-color: #383838;
+				}
+			}
+			.active {
+				background-color: white;
+				border-bottom: 3px solid lighten(#3b9fed, 10%);
+				color: #464646;
+				&:hover {
+					background-color: white;
+				}
+			}
+			#select-query-date {
+				margin-top: 2px;
+				margin-right: 2px;
+				float: right;
+				width: 30px;
+				height: 25px;
+				cursor: pointer;
+				text-align: right;
+				input {
+					display: none;
+				}
+				.add-on {
+					border-radius: 0;
+					border: 1px solid #c8c5c5;
+				}
+				.add-on.active {
+					height: 27px;
+					border-bottom: 3px solid lighten(#3b9fed, 10%);
+				}
+			}
+		}
+		.query-group-header {
+			background: #D9DCE1 url('../img/collapse-down.png') no-repeat 97% 50%;
+			text-align: right;
+			padding-right: 25px;
+			direction: rtl;
+			cursor: pointer;
+			box-shadow: 0 3px 8px rgba(0,0,0,0.2); 
+			z-index: 10;
+			position: relative;
+			&:hover {
+				background-color: darken(#D9DCE1, 10%);
+			}
+		}		
+		.query {
+			border: 1px solid #F2F2F2;
+			border-top: none;
+			padding: 10px 10px 10px 25px;
+			background-color: #FBFBFB;
+			.answer-info,
+			.query-info {
+				font-weight: bold;
+				> span {
+					display: inline-block;
+				}
+				> span:nth-child(1) {
+					width: -moz-calc(~"100% - 130px");
+					width: -webkit-calc(~"100% - 130px");
+					width: -o-calc(~"100% - 130px");
+					width: calc(~"100% - 130px"); 
+				}
+				> span:nth-child(2) {
+					width: 80px;					
+				}
+				> span:nth-child(3) {
+					width: 40px;					
+				}
+			}
+			.query-title {
+				margin: 10px 0;
+				line-height: 14px;
+				max-height: 50px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+		}
+	}
+	.query-form {
+		left: 30%;
+		width: 70%;
+		padding: 30px 0;
+		background-color: #FBFBFB;
+		> * {
+			width: 65%;
+			margin: 0 auto;
+		}
+		> h3 {
+			font-size: 20px;
+			padding-left: 10px;
+		}
+		> div {
+			background-color: white;
+			border: 1px solid #EEEEEE;
+			padding: 20px 40px 10px 40px;
+			margin-bottom: 5px;
+		}
+		.date-block label{
+			display: table-cell;
+			vertical-align: top;
+			width: 70px;
+		}
+		label {
+			display: inline-block;
+			vertical-align: middle;
+			width: 90px;
+		}
+		input.query-form-header,
+		input.query-form-number
+		{
+			width: -moz-calc(~"100% - 100px");
+			width: -webkit-calc(~"100% - 100px");
+			width: -o-calc(~"100% - 100px");
+			width: calc(~"100% - 100px"); 
+		}
+		.address-block {
+			> div {
+				display: inline-block;
+				.query-form-address {
+					margin-right: 20px;
+				}
+				.query-form-address + label {
+					width: 50px;
+				}
+				.query-form-radius {
+					width: 50px;
+					margin-right: 5px;
+					margin-left: 5px;
+				}
+				span {
+					font-size: 14px;
+				}
+			}
+			.query-form-mark-area {
+				margin-left: 95px;
+			}
+		}
+		.auto-block {
+			> div {
+				display: inline-block;
+				input {
+					margin-bottom: 0;
+				}
+				.query-form-hint {
+					display: block;
+					margin-left: 100px;
+					font: 12px;
+					font-style: italic;
+					color: #aaa;
+				}
+			}
+			.query-form-auto-number {
+				width: 120px;
+			}
+			> div:nth-child(2) {
+				label {
+					direction: rtl;
+					padding-right: 10px;
+				}
+				.query-form-auto-region {
+					width: 50px;
+				}
+			}
+		}
+		.query-form-submit {
+			background: none;
+			border: none;
+			padding-left: 135px;
+			.button {
+				height: 35px;
+				margin-right: 10px;
+			}
+		}
+	}
+	.popup-map {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 9999px;
+		background: rgba(0,0,0,0.5);
+		z-index: 20;
+		> div {
+			position: relative;
+			margin: auto;
+			padding: 20px;
+			top: 50%;
+			-webkit-transform: translatey(-50%);
+			-ms-transform: translatey(-50%);
+			transform: translatey(-50%);
+			background: white;
+			width: 60%;
+			height: 70%;
+			label {
+				display: inline-block;
+				margin-bottom: 0;
+				vertical-align: text-bottom;
+				margin-right: 10px;
+			}
+			input {
+				width: 60%;
+			}
+			.popup-close {
+				position: absolute;
+				right: -25px;
+				top: -25px;
+				padding: 5px;
+				width: 50px;
+				border-radius: 50%;
+				height: 50px;
+				background: no-repeat url('http://localhost/apkbg/css/../img/button-close.png');
+				background-size: cover;
+				opacity: 0.8;
+				cursor: pointer;
+				z-index: 10000;
+			}
+		}
+		.button {
+			height: 30px;
+			width: 140px;
+			margin: 15px auto 0;
+			display: block;
+		}
+		#search-map {
+			width: 100%;
+			height: -moz-calc(~"100% - 80px");
+			height: -webkit-calc(~"100% - 80px");
+			height: -o-calc(~"100% - 80px");
+			height: calc(~"100% - 80px"); 
+		}
+	}
+}

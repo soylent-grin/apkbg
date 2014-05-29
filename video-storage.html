@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="initial-scale = 1.0, maximum-scale=1.0, user-scalable = no, width=device-width" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	<title>Безопасный город | архив мероприятий</title>
+	<!-- styles -->
+	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap-datetimepicker-min.css">
+	<link rel="stylesheet" href="dry/css/leaflet.css">
+	<link rel="stylesheet" href="dry/css/leaflet.draw.css">
+	<link rel="stylesheet/less" type="text/css" href="css/style.less">
+	<link rel="stylesheet/less" type="text/css" href="css/video-storage.less">	
+	
+	<script src="dry/js/less.js"></script>	
+	
+</head>
+<body class="video-storage">
+	<header>
+		<div class="logo"></div>
+		<div class="message-block"></div>
+		<div class="user-info"></div>		
+	</header>
+	<div id="content">
+		<div class="content-header">
+			<a href="" class="action create" title="Создать"></a>
+			<a href="" class="action load" title="Сохранить"></a>
+			<div class="search-block">
+				<div class="input-append">
+					<input type="text" class="search-text" placeholder="Поиск по запросу">
+					<span class="add-on search-button"></span>
+				</div>
+				<a href="" class="extended-search">Расширить пармаетры</a>
+			</div>
+		</div>
+		<div class="query-list">
+			<div class="query-list-header">
+				<a href="" class="today">Сегодня</a><!--
+				--><a href="" class="yesterday">Вчера</a><!--
+				--><a href="" class="day-ago">Позавчера</a>
+				<div id="select-query-date" class="input-append datepicker-el">
+					<span></span>
+					<input data-format="yyyy-MM-dd" type="text"></input>
+					<span class="add-on">
+						<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+					</span>
+				</div>
+			</div>
+			<div class="query-group">
+				<div class="query-group-header"></div>
+				<div>
+					<div class="query">
+						<div class="answer-info">
+							<span>Ответ</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-info">
+							<span>Запрос</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+					</div>		
+				</div>		
+			</div>
+			<div class="query-group">
+				<div class="query-group-header">3</div>
+				<div>
+					<div class="query">
+						<div class="answer-info">
+							<span>Ответ</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-info">
+							<span>Запрос</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+					</div>
+					<div class="query">
+						<div class="answer-info">
+							<span>Ответ</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-info">
+							<span>Запрос</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+					</div>
+					<div class="query">
+						<div class="answer-info">
+							<span>Ответ</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-info">
+							<span>Запрос</span>
+							<span>10.04.14</span>
+							<span>15:23</span>
+						</div>
+						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+					</div>		
+				</div>										
+			</div>
+		</div>
+		<div class="query-form">
+			<h3>Запрос на предоставление материалов</h3>
+			<div>
+				<div>
+					<label for="">Заголовок</label>
+					<input type="text" class="query-form-header">
+				</div>
+				<div>
+					<label for="">Номер</label>
+					<input type="text" class="query-form-number">
+				</div>
+			</div>
+			<div class="date-block table">
+				<div>
+					<label for="">Дата</label>
+					<div>
+						<div class="">
+							<div id="event-date-overall" class="input-append datepicker-el">
+								<input data-format="yyyy-MM-dd" type="text"></input>
+								<span class="add-on">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+								</span>
+							</div>
+							<span>или</span>
+						</div>
+						<div>
+							<div class="input-wrapper">								
+								<span>c</span>
+								<div id="event-date-from" class="input-append datepicker-el">
+									<input data-format="yyyy-MM-dd" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+							<div class="input-wrapper">	
+								<span>по</span>
+								<div id="event-date-to" class="input-append datepicker-el">
+									<input data-format="yyyy-MM-dd" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>					
+					</div>
+				</div>
+				<div>
+					<label for="">Время</label>
+					<div>
+						<div>
+							<div class="input-wrapper">	
+								<span>c</span>
+								<div id="event-time-from" class="input-append timepicker-el">
+									<input data-format="hh:mm:ss" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+							<div class="input-wrapper">	
+								<span>по</span>
+								<div id="event-time-to" class="input-append timepicker-el">
+									<input data-format="hh:mm:ss" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>					
+					</div>
+				</div>
+			</div>
+			<div class="address-block">
+				<div>
+					<label for="">Адрес</label>
+					<input type="text" class="query-form-address">
+
+					<label for="">Радиус</label>
+					<input type="text" class="query-form-radius">
+					<span>км</span>
+				</div>
+				<br>
+				<a href="" class="query-form-mark-area">Отметить область на карте</a>
+				<div class="selected-area"></div>
+			</div>
+			<div class="auto-block">
+				<div>
+					<label for="">Гос. № ТС</label>
+					<input type="text" class="query-form-auto-number">
+					<span class="query-form-hint">E307OK</span>
+				</div>
+				<div>
+					<label for="">Регион</label>
+					<input type="text" class="query-form-auto-region">
+					<span class="query-form-hint">98</span>
+				</div>
+			</div>
+			<div>
+				<label for="">Загрузить фото</label>
+				<input type="text" class="query-form-photo-upload">
+			</div>
+			<div class="query-form-submit">
+				<button class="button blue">Отправить запрос</button>
+				<a href="" class="clear">Очистить форму</a>
+			</div>
+		</div>
+	</div>	
+	<div class="popup-map">
+		<div>
+			<div>
+				<label for="">Адрес</label><input type="text" class="search-address">
+			</div>
+			<div id="search-map">
+			</div>
+			<button class="button blue save-area">Сохранить</button>
+			<span class="popup-close"></span>
+		</div>
+	</div>
+	<footer>
+		<span>2014</span>
+	</footer>
+	
+	
+	
+	<script src="dry/js/jquery.js"></script>
+	<script src="dry/js/moment.js"></script>
+	<script src="dry/js/bootstrap-datetimepicker-min.js"></script>
+	<script src="dry/js/bootstrap-datetimepicker.ru.js"></script>
+	<script src="dry/js/leaflet.js"></script>
+	<script src="dry/js/leaflet.draw.js"></script>
+	<script src="js/video-storage.js"></script>
+</body>
+</html>

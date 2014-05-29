@@ -7,6 +7,7 @@
 }
 
 #content {
+	overflow: hidden;
 	> * {		
 		position: absolute;
 	}	
@@ -167,6 +168,7 @@
 		right: 0;
 		padding: 0;
 		left: auto;	
+		overflow: hidden;
 		h4 {
 			margin: 0;
 			padding-left: 15px;
@@ -177,7 +179,7 @@
 			color: white;
 		}
 		h4:first-child {			
-			margin: 10px 0 -10px 0 ; 
+			margin: 10px 0 0 0; 
 		}
 		h5 {
 			font-size: 14px;
@@ -215,7 +217,15 @@
 			}
 		}
 		.cameras-list {
-			margin-bottom: 20px;
+			padding-bottom: 20px;
+			max-height: 50%;
+			max-height: -moz-calc(~"60% - 45px");
+			max-height: -webkit-calc(~"60% - 45px");
+			max-height: -o-calc(~"60% - 45px");
+			max-height: calc(~"60% - 45px");
+			width: 100%;
+			position: relative;
+			overflow-x: auto;
 		}
 		.camera-block {
 			padding-left: 15px;
@@ -233,6 +243,13 @@
 		}
 		.photos-list {	
 			padding: 20px;
+			height: -moz-calc(~"40% - 35px");
+			height: -webkit-calc(~"40% - 35px");
+			height: -o-calc(~"40% - 35px");
+			height: calc(~"40% - 35px");
+			width: 100%;
+			position: relative;
+			overflow-x: auto;
 			img {
 				cursor: pointer;
 				vertical-align: text-top;
@@ -355,7 +372,10 @@
 		}
 	}
 	#content > section {
-		height: 100%;
+		height: -moz-calc(~"100% - 30px");
+		height: -webkit-calc(~"100% - 30px");
+		height: -o-calc(~"100% - 30px");
+		height: calc(~"100% - 30px");
 		left: 0;	
 		overflow-y: auto;
 		position: absolute;
@@ -387,6 +407,7 @@
 		.button-search {
 			margin-left: 20px;
 			width: 80px;
+			margin-bottom: 10px;
 		}
 		.clean-search{
 			display: inline-block;
