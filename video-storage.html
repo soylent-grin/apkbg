@@ -35,6 +35,94 @@
 					<span class="add-on search-button"></span>
 				</div>
 				<a href="" class="extended-search">Расширить пармаетры</a>
+				<div class="extended-search-params">
+					
+					<div class="date-block table">
+						<div>
+							<label for="">Дата</label>
+							<div>
+								<div class="">
+									<div id="event-date-overall" class="input-append datepicker-el">
+										<input data-format="yyyy-MM-dd" type="text"></input>
+										<span class="add-on">
+											<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+										</span>
+									</div>
+									<span>или</span>
+								</div>
+								<div>
+									<div class="input-wrapper">								
+										<span>c</span>
+										<div id="event-date-from" class="input-append datepicker-el">
+											<input data-format="yyyy-MM-dd" type="text"></input>
+											<span class="add-on">
+												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+											</span>
+										</div>
+									</div>
+									<div class="input-wrapper">	
+										<span>по</span>
+										<div id="event-date-to" class="input-append datepicker-el">
+											<input data-format="yyyy-MM-dd" type="text"></input>
+											<span class="add-on">
+												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+											</span>
+										</div>
+									</div>
+								</div>					
+							</div>
+						</div>
+						<div>
+							<label for="">Время</label>
+							<div>
+								<div>
+									<div class="input-wrapper">	
+										<span>c</span>
+										<div id="event-time-from" class="input-append timepicker-el">
+											<input data-format="hh:mm:ss" type="text"></input>
+											<span class="add-on">
+												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+											</span>
+										</div>
+									</div>
+									<div class="input-wrapper">	
+										<span>по</span>
+										<div id="event-time-to" class="input-append timepicker-el">
+											<input data-format="hh:mm:ss" type="text"></input>
+											<span class="add-on">
+												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+											</span>
+										</div>
+									</div>
+								</div>					
+							</div>
+						</div>
+					</div>					
+
+					<div class="address-block">
+						<div>
+							<label for="">Адрес</label>
+							<input type="text" class="query-form-address">
+
+							<label for="">Радиус</label>
+							<input type="text" class="query-form-radius">
+							<span>км</span>
+						</div>
+					</div>
+					<div class="auto-block">
+						<div>
+							<label for="">Гос. № ТС</label>
+							<input type="text" class="query-form-auto-number">
+							<span class="query-form-hint">E307OK</span>
+						</div>
+						<div>
+							<label for="">Регион</label>
+							<input type="text" class="query-form-auto-region">
+							<span class="query-form-hint">98</span>
+						</div>
+					</div>				
+					
+				</div>
 			</div>
 		</div>
 		<div class="query-list">
@@ -50,68 +138,127 @@
 					</span>
 				</div>
 			</div>
-			<div class="query-group">
-				<div class="query-group-header"></div>
-				<div>
-					<div class="query">
-						<div class="answer-info">
-							<span>Ответ</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
-						</div>
-						<div class="query-info">
-							<span>Запрос</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
-						</div>
-						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
-					</div>		
-				</div>		
+			
+			<div class="query">
+				<div class="query-info">
+					<div class="query-group-header">
+						<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+					</div>
+					<div class="answer-string">
+						<span>Ответ</span>
+						<span>10.04.14</span>
+						<span>15:23</span>
+					</div>
+					<div class="query-string">
+						<span>Запрос</span>
+						<span>10.04.14</span>
+						<span>15:23</span>
+					</div>
+					<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+				</div>
+				<div class="query-group-container">
+				</div>
 			</div>
-			<div class="query-group">
-				<div class="query-group-header">3</div>
-				<div>
-					<div class="query">
-						<div class="answer-info">
-							<span>Ответ</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
-						</div>
+			<div class="query query-group expanded has-response">
+				<div class="query-info">
+					<div class="query-group-header">
+						<span class="expand"></span>&nbsp;(<span class="count">3</span>)
+					</div>
+					<div class="answer-string">
+						<span>Ответ</span>
+						<span>10.04.14</span>
+						<span>15:23</span>
+					</div>
+					<div class="query-string">
+						<span>Запрос</span>
+						<span>10.04.14</span>
+						<span>15:23</span>
+					</div>
+					<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+				</div>
+				<div class="query-group-container">
+					<div class="query has-response">
 						<div class="query-info">
-							<span>Запрос</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
+							<div class="query-group-header">
+								<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+							</div>
+							<div class="answer-string">
+								<span>Ответ</span>
+								<span>10.04.14</span>
+								<span>15:23</span>
+							</div>
+							<div class="query-string">
+								<span>Запрос</span>
+								<span>10.04.14</span>
+								<span>15:23</span>
+							</div>
+							<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 						</div>
-						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+						<div class="query-group-container">
+						</div>
 					</div>
 					<div class="query">
-						<div class="answer-info">
-							<span>Ответ</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
-						</div>
 						<div class="query-info">
-							<span>Запрос</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
+							<div class="query-group-header">
+								<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+							</div>
+							<div class="answer-string">
+								<span>Ответ</span>
+								<span>10.04.14</span>
+								<span>15:23</span>
+							</div>
+							<div class="query-string">
+								<span>Запрос</span>
+								<span>10.04.14</span>
+								<span>15:23</span>
+							</div>
+							<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 						</div>
-						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+						<div class="query-group-container">
+						</div>
 					</div>
 					<div class="query">
-						<div class="answer-info">
-							<span>Ответ</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
-						</div>
 						<div class="query-info">
-							<span>Запрос</span>
-							<span>10.04.14</span>
-							<span>15:23</span>
+							<div class="query-group-header">
+								<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+							</div>
+							<div class="answer-string">
+								<span>Ответ</span>
+								<span>10.04.14</span>
+								<span>15:23</span>
+							</div>
+							<div class="query-string">
+								<span>Запрос</span>
+								<span>10.04.14</span>
+								<span>15:23</span>
+							</div>
+							<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 						</div>
-						<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
-					</div>		
-				</div>										
-			</div>
+						<div class="query-group-container">
+						</div>
+					</div>			
+				</div>
+			</div>				
+			<div class="query">
+				<div class="query-info">
+					<div class="query-group-header">
+						<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+					</div>
+					<div class="answer-string">
+						<span>Ответ</span>
+						<span>10.04.14</span>
+						<span>15:23</span>
+					</div>
+					<div class="query-string">
+						<span>Запрос</span>
+						<span>10.04.14</span>
+						<span>15:23</span>
+					</div>
+					<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+				</div>
+				<div class="query-group-container">
+				</div>
+			</div>		
 		</div>
 		<div class="query-form">
 			<h3>Запрос на предоставление материалов</h3>
@@ -197,7 +344,17 @@
 				</div>
 				<br>
 				<a href="" class="query-form-mark-area">Отметить область на карте</a>
-				<div class="selected-area"></div>
+				<div class="popup-map">
+					<div>
+						<div>
+							<label for="">Адрес</label><input type="text" class="search-address">
+						</div>
+						<div id="search-map">
+						</div>
+						<button class="button blue save-area">Сохранить</button>
+						<span class="popup-close"></span>
+					</div>
+				</div>
 			</div>
 			<div class="auto-block">
 				<div>
@@ -220,23 +377,31 @@
 				<a href="" class="clear">Очистить форму</a>
 			</div>
 		</div>
-	</div>	
-	<div class="popup-map">
-		<div>
-			<div>
-				<label for="">Адрес</label><input type="text" class="search-address">
-			</div>
-			<div id="search-map">
-			</div>
-			<button class="button blue save-area">Сохранить</button>
-			<span class="popup-close"></span>
-		</div>
 	</div>
 	<footer>
 		<span>2014</span>
 	</footer>
 	
-	
+	<div class="query template">
+		<div class="query-info">
+			<div class="query-group-header">
+				<span class="expand"></span>&nbsp;(<span class="count">3</span>)
+			</div>
+			<div class="answer-string">
+				<span>Ответ</span>
+				<span>10.04.14</span>
+				<span>15:23</span>
+			</div>
+			<div class="query-string">
+				<span>Запрос</span>
+				<span>10.04.14</span>
+				<span>15:23</span>
+			</div>
+			<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
+		</div>
+		<div class="query-group-container">
+		</div>
+	</div>	
 	
 	<script src="dry/js/jquery.js"></script>
 	<script src="dry/js/moment.js"></script>

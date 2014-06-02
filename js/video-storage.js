@@ -23,15 +23,20 @@
 			});
 			
 			// events 
-			$(".query-group-header").on('click', function() {
-				$(this).siblings('div').slideToggle();
+			$(".query-group > .query-info").on('click', function() {
+				$(this).parent().toggleClass('expanded').find('.query-group-container').slideToggle();
+			}); 
+			$(".query-info").on('click', function() {
+				$('.query.active').removeClass('active');
+				$(this).parent().toggleClass('active');
 			});
 			$('.query-form-mark-area').on('click', function(e) {
 				e.preventDefault();
-				$('.popup-map').css({top:0});
+				$('.popup-map').show().addClass('active');
+				that.map.invalidateSize();
 			});
 			$('.popup-close').on('click', function() {
-				$('.popup-map').css({top:'9999px'});
+				$('.popup-map').removeClass('active');
 			});
 			$('.query-list-header > a').on('click', function(e) {
 				e.preventDefault();
@@ -51,7 +56,14 @@
 			});
 			$('.save-area').on('click', function(e) {
 				var layer = that.map._layers[0];
-				$('.popup-map').css({top:'9999px'});
+				$('.popup-map').removeClass('active');
+			});
+			$('.extended-search').on('click', function (e) {
+				e.preventDefault();
+				$.ajax({
+					type: "POST",
+					url: "http://10.1.30.3:7777/rest/demo/2"
+				})
 			});
 			
 		},
@@ -60,7 +72,6 @@
 			this.map = L.map('search-map').setView([59.94, 30.35], 13);
 			L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 				maxZoom: 18,
-				attribution: '© <a href="http://mapbox.com">Mapbox</a>',
 				id: 'examples.map-i86knfo3'
 			}).addTo(this.map);
 
@@ -97,8 +108,7 @@
 			});
 			this.map.addControl(drawControl);
 			this.map.on('draw:created', function (e) {
-				var type = e.layerType,
-					layer = e.layer;
+				var layer = e.layer;
 				that.drawnItems.addLayer(layer);
 			});
 		},
@@ -115,10 +125,9 @@
 					}
 				}
 			}
-		}
-		
-		
-	}
+		}	
+	};
+	
 	$(document).ready(function() {
 		var video_storage = new Video_Storage();
 	});
