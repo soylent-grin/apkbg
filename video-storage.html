@@ -32,93 +32,108 @@
 			<div class="search-block">
 				<div class="input-append">
 					<input type="text" class="search-text" placeholder="Поиск по запросу">
-					<span class="add-on search-button"></span>
+					<span class="add-on search-button"></span><!--
+				 --><a href="" class="extended-search">Расширить пармаетры<i></i></a>
 				</div>
-				<a href="" class="extended-search">Расширить пармаетры</a>
-				<div class="extended-search-params">
-					
-					<div class="date-block table">
+				<div class="extended-search-params table">
+					<div>
+						<label for="">Искать</label>
 						<div>
-							<label for="">Дата</label>
-							<div>
-								<div class="">
-									<div id="event-date-overall" class="input-append datepicker-el">
+							<input type="checkbox" class="in-queries">
+							<label for="">В запросах</label>
+							<input type="checkbox" class="in-answers">
+							<label for="">В ответах</label>
+						</div>
+					</div>
+					<div>
+						<label for="">Заголовок</label>
+						<input type="text" class="search-header">
+					</div>
+					<div>
+						<label for="">Номер</label>
+						<input type="text" class="search-number">
+					</div>
+					<div>
+						<label for="">Дата</label>
+						<div>
+							<div class="">
+								<div id="search-date-overall" class="input-append datepicker-el">
+									<input data-format="yyyy-MM-dd" type="text"></input>
+									<span class="add-on">
+										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+									</span>
+								</div>
+								<span>или</span>
+							</div>
+							<div class="margin-left">
+								<div class="input-wrapper">								
+									<span>c</span>
+									<div id="search-date-from" class="input-append datepicker-el">
 										<input data-format="yyyy-MM-dd" type="text"></input>
 										<span class="add-on">
 											<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
 										</span>
 									</div>
-									<span>или</span>
 								</div>
-								<div>
-									<div class="input-wrapper">								
-										<span>c</span>
-										<div id="event-date-from" class="input-append datepicker-el">
-											<input data-format="yyyy-MM-dd" type="text"></input>
-											<span class="add-on">
-												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-											</span>
-										</div>
+								<div class="input-wrapper">	
+									<span>по</span>
+									<div id="search-date-to" class="input-append datepicker-el">
+										<input data-format="yyyy-MM-dd" type="text"></input>
+										<span class="add-on">
+											<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+										</span>
 									</div>
-									<div class="input-wrapper">	
-										<span>по</span>
-										<div id="event-date-to" class="input-append datepicker-el">
-											<input data-format="yyyy-MM-dd" type="text"></input>
-											<span class="add-on">
-												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-											</span>
-										</div>
-									</div>
-								</div>					
-							</div>
+								</div>
+							</div>					
 						</div>
+					</div>
+					<div>
+						<label for="">Время</label>
 						<div>
-							<label for="">Время</label>
-							<div>
-								<div>
-									<div class="input-wrapper">	
-										<span>c</span>
-										<div id="event-time-from" class="input-append timepicker-el">
-											<input data-format="hh:mm:ss" type="text"></input>
-											<span class="add-on">
-												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-											</span>
-										</div>
+							<div class="margin-left">
+								<div class="input-wrapper">	
+									<span>c</span>
+									<div id="search-time-from" class="input-append timepicker-el">
+										<input data-format="hh:mm:ss" type="text"></input>
+										<span class="add-on">
+											<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+										</span>
 									</div>
-									<div class="input-wrapper">	
-										<span>по</span>
-										<div id="event-time-to" class="input-append timepicker-el">
-											<input data-format="hh:mm:ss" type="text"></input>
-											<span class="add-on">
-												<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-											</span>
-										</div>
+								</div>
+								<div class="input-wrapper">	
+									<span>по</span>
+									<div id="search-time-to" class="input-append timepicker-el">
+										<input data-format="hh:mm:ss" type="text"></input>
+										<span class="add-on">
+											<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+										</span>
 									</div>
-								</div>					
-							</div>
+								</div>
+							</div>					
 						</div>
-					</div>					
+					</div>				
 
-					<div class="address-block">
+					<div>
+						<label for="">Адрес</label>
 						<div>
-							<label for="">Адрес</label>
-							<input type="text" class="query-form-address">
-
+							<input type="text" class="search-address">
 							<label for="">Радиус</label>
-							<input type="text" class="query-form-radius">
+							<input type="number" min="0" value="0"  step="0.1" class="search-radius">
 							<span>км</span>
 						</div>
 					</div>
-					<div class="auto-block">
-						<div>
-							<label for="">Гос. № ТС</label>
-							<input type="text" class="query-form-auto-number">
-							<span class="query-form-hint">E307OK</span>
-						</div>
-						<div>
-							<label for="">Регион</label>
-							<input type="text" class="query-form-auto-region">
-							<span class="query-form-hint">98</span>
+					<div>
+						<label for="">Гос. № ТС</label>
+						<div class="search-auto-block">
+							<div>
+								<input type="text" class="search-auto-number">
+								<span class="search-hint">E307OK</span>
+							</div>
+							<div>
+								<label for="">Регион</label>
+								<input type="text" class="search-auto-region">
+								<span class="search-hint">98</span>
+							</div>
 						</div>
 					</div>				
 					
@@ -140,10 +155,10 @@
 			</div>
 			
 			<div class="query">
+				<div class="query-group-header">
+					<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+				</div>
 				<div class="query-info">
-					<div class="query-group-header">
-						<span class="expand"></span>&nbsp;(<span class="count">0</span>)
-					</div>
 					<div class="answer-string">
 						<span>Ответ</span>
 						<span>10.04.14</span>
@@ -153,6 +168,9 @@
 						<span>Запрос</span>
 						<span>10.04.14</span>
 						<span>15:23</span>
+					</div>
+					<div class="number-string">
+						<span>43223 43335343423</span>
 					</div>
 					<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 				</div>
@@ -160,10 +178,10 @@
 				</div>
 			</div>
 			<div class="query query-group expanded has-response">
+				<div class="query-group-header">
+					<span class="expand"></span>&nbsp;(<span class="count">3</span>)
+				</div>
 				<div class="query-info">
-					<div class="query-group-header">
-						<span class="expand"></span>&nbsp;(<span class="count">3</span>)
-					</div>
 					<div class="answer-string">
 						<span>Ответ</span>
 						<span>10.04.14</span>
@@ -174,14 +192,17 @@
 						<span>10.04.14</span>
 						<span>15:23</span>
 					</div>
+					<div class="number-string">
+						<span>43223 43335343423</span>
+					</div>
 					<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 				</div>
 				<div class="query-group-container">
 					<div class="query has-response">
-						<div class="query-info">
-							<div class="query-group-header">
-								<span class="expand"></span>&nbsp;(<span class="count">0</span>)
-							</div>
+						<div class="query-group-header">
+							<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+						</div>
+						<div class="query-info">							
 							<div class="answer-string">
 								<span>Ответ</span>
 								<span>10.04.14</span>
@@ -191,6 +212,9 @@
 								<span>Запрос</span>
 								<span>10.04.14</span>
 								<span>15:23</span>
+							</div>
+							<div class="number-string">
+								<span>43223 43335343423</span>
 							</div>
 							<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 						</div>
@@ -198,10 +222,10 @@
 						</div>
 					</div>
 					<div class="query">
-						<div class="query-info">
-							<div class="query-group-header">
-								<span class="expand"></span>&nbsp;(<span class="count">0</span>)
-							</div>
+						<div class="query-group-header">
+							<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+						</div>
+						<div class="query-info">							
 							<div class="answer-string">
 								<span>Ответ</span>
 								<span>10.04.14</span>
@@ -211,6 +235,9 @@
 								<span>Запрос</span>
 								<span>10.04.14</span>
 								<span>15:23</span>
+							</div>
+							<div class="number-string">
+								<span>43223 43335343423</span>
 							</div>
 							<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 						</div>
@@ -218,10 +245,10 @@
 						</div>
 					</div>
 					<div class="query">
-						<div class="query-info">
-							<div class="query-group-header">
-								<span class="expand"></span>&nbsp;(<span class="count">0</span>)
-							</div>
+						<div class="query-group-header">
+							<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+						</div>
+						<div class="query-info">							
 							<div class="answer-string">
 								<span>Ответ</span>
 								<span>10.04.14</span>
@@ -231,6 +258,9 @@
 								<span>Запрос</span>
 								<span>10.04.14</span>
 								<span>15:23</span>
+							</div>
+							<div class="number-string">
+								<span>43223 43335343423</span>
 							</div>
 							<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 						</div>
@@ -240,10 +270,10 @@
 				</div>
 			</div>				
 			<div class="query">
+				<div class="query-group-header">
+					<span class="expand"></span>&nbsp;(<span class="count">0</span>)
+				</div>
 				<div class="query-info">
-					<div class="query-group-header">
-						<span class="expand"></span>&nbsp;(<span class="count">0</span>)
-					</div>
 					<div class="answer-string">
 						<span>Ответ</span>
 						<span>10.04.14</span>
@@ -253,6 +283,9 @@
 						<span>Запрос</span>
 						<span>10.04.14</span>
 						<span>15:23</span>
+					</div>
+					<div class="number-string">
+						<span>43223 43335343423</span>
 					</div>
 					<div class="query-title">Наименование запроса с ограниченным количеством символов</div>
 				</div>
@@ -339,7 +372,7 @@
 					<input type="text" class="query-form-address">
 
 					<label for="">Радиус</label>
-					<input type="text" class="query-form-radius">
+					<input type="number" min="0" value="0"  step="0.1"class="query-form-radius">
 					<span>км</span>
 				</div>
 				<br>

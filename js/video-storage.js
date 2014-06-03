@@ -1,6 +1,33 @@
 
+
 (function($) {
 	'use strict';
+
+	L.Polygon.prototype.getCenter = function(){
+		var pts = this._latlngs;
+		var off = pts[0];
+		var twicearea = 0;
+		var x = 0;
+		var y = 0;
+		var nPts = pts.length;
+		var p1,p2;
+		var f;
+		for (var i = 0, j = nPts - 1; i < nPts; j = i++) {
+			p1 = pts[i];
+			p2 = pts[j];
+			f = (p1.lat - off.lat) * (p2.lng - off.lng) - (p2.lat - off.lat) * (p1.lng - off.lng);
+			twicearea += f;
+			x += (p1.lat + p2.lat - 2 * off.lat) * f;
+			y += (p1.lng + p2.lng - 2 * off.lng) * f;
+		}
+		f = twicearea * 3;
+		debugger
+		return new L.LatLng(
+			x / f + off.lat,
+			y / f + off.lng
+		);
+	}
+	
 	function Video_Storage() {
 		this.options = {
 			
@@ -23,9 +50,12 @@
 			});
 			
 			// events 
-			$(".query-group > .query-info").on('click', function() {
+			$(".query-group > .query-group-header").on('click', function() {
 				$(this).parent().toggleClass('expanded').find('.query-group-container').slideToggle();
 			}); 
+			$(".query-group > .query-info").on('click', function() {
+				$(this).parent().addClass('expanded').find('.query-group-container').slideDown();
+			});
 			$(".query-info").on('click', function() {
 				$('.query.active').removeClass('active');
 				$(this).parent().toggleClass('active');
@@ -40,8 +70,13 @@
 			});
 			$('.query-list-header > a').on('click', function(e) {
 				e.preventDefault();
-				$('.query-list-header .active').removeClass("active");
-				$(this).addClass('active');
+				if ($(this).hasClass('active')) {
+					$(this).removeClass('active');
+				}
+				else {
+					$('.query-list-header .active').removeClass("active");
+					$(this).addClass('active');
+				}
 			});
 			$('#select-query-date .add-on').on('click', function(e) {
 				if ($(this).hasClass('active')) {
@@ -52,18 +87,18 @@
 			});
 			$('#select-query-date').on('changeDate', function(e) {
 				$('.query-list-header > a').removeClass("active");
-				$('#select-query-date').find('.add-on').toggleClass('active');
+				$('#select-query-date').find('.add-on').addClass('active');
+				$('#select-query-date .add-on').attr('title', "Выбранная дата: " + e.date.toLocaleDateString());
 			});
 			$('.save-area').on('click', function(e) {
-				var layer = that.map._layers[0];
 				$('.popup-map').removeClass('active');
+				that.map.invalidateSize();
+				that.area ? that.map.setView(that.area) : $('.popup-map').hide();
 			});
 			$('.extended-search').on('click', function (e) {
 				e.preventDefault();
-				$.ajax({
-					type: "POST",
-					url: "http://10.1.30.3:7777/rest/demo/2"
-				})
+				$(this).toggleClass('expanded');
+				$('.extended-search-params').toggle();
 			});
 			
 		},
@@ -108,12 +143,18 @@
 			});
 			this.map.addControl(drawControl);
 			this.map.on('draw:created', function (e) {
+				that.area = e.layer.getCenter();
+				that.drawnItems.addLayer(e.layer);
+				$(".leaflet-draw-draw-polygon").toggle();
+			});
+			this.map.on('draw:deleted', function (e) {
 				var layer = e.layer;
-				that.drawnItems.addLayer(layer);
+				that.area = undefined;
+				$(".leaflet-draw-draw-polygon").toggle();
 			});
 		},
 		
-		clearMap: function() {
+		clear_map: function() {
 			var m = this.map;
 			for(var i in m._layers) {
 				if(m._layers[i]._path !== undefined) {
@@ -125,7 +166,7 @@
 					}
 				}
 			}
-		}	
+		}
 	};
 	
 	$(document).ready(function() {

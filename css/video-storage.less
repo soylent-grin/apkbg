@@ -1,5 +1,8 @@
 .video-storage {
 	position: relative;
+	.margin-left {
+		margin-left: -20px;
+	}
 	.content-header {
 		background-color: #2B343D;
 		height: 40px;
@@ -13,7 +16,7 @@
 			margin-right: 5px;
 			background-color: #1587E0;
 			background-position: center;
-			background-image: url('http://localhost/apkbg/css/../img/upload.png');
+			background-image: url('../img/upload.png');
 			background-repeat: no-repeat;
 			margin-top: 0;
 			width: 60px;
@@ -24,7 +27,7 @@
 		}
 		.action:first-child {
 			margin-left: 30px;
-			background-image: url('http://localhost/apkbg/css/../img/create-query.png');
+			background-image: url('../img/create-query.png');
 		}
 		.search-block {
 			float: none;
@@ -32,19 +35,22 @@
 			display: block;
 			line-height: 40px;
 			left: 50%;
-			width: 500px;
-			margin-left: -250px;
+			width: 600px;
+			margin-left: -300px;
 			> .input-append {
 				vertical-align: top;
 				line-height: 40px;
 				display: inline-block;
 				margin: 0;
-				width: 330px;
+				width: 430px;
 				> * {
 					vertical-align: middle;
 				}
 				> input {
-					width: 100%;
+					width: -moz-calc(~"100% - 22px");
+					width: -webkit-calc(~"100% - 22px");
+					width: -o-calc(~"100% - 22px");
+					width: calc(~"100% - 22px"); 
 				}
 				> .search-button {
 					display: inline-block;
@@ -61,11 +67,34 @@
 			}
 		}
 		.extended-search {
-			margin-left: 30px;
+			padding-left: 17px;
 			color: white;
-			float: right;
+			width: 170px;
+			height: 25px;
+			line-height: 25px;
+			display: inline-block;
+			vertical-align: middle;
+			font-size: 12px;
+			border: 1px solid transparent;
+			i {
+				background: url('../img/v-arrow-sprite.png') no-repeat;
+				width: 10px;
+				height: 5px;
+				display: inline-block;
+				margin: 0 5px;
+			}
+		}
+		.extended-search.expanded {
+			background-color: rgba(170, 170, 170, 0.69);
+			border-top: 1px solid rgb(204, 204, 204);
+			border-right: 1px solid rgb(204, 204, 204);
+			i {
+				background-position: 0 -7px;
+			}
 		}
 		.extended-search-params {
+			display: none;
+			top: 34px;
 			background: white;
 			padding: 20px;
 			position: absolute;
@@ -73,7 +102,66 @@
 			width: 100%;
 			z-index: 100;
 			box-shadow: 0 0 10px rgba(0,0,0,0.2);
-			height: 600px;
+			> div > label {
+				width: 100px;
+				padding-top: 5px;
+				padding-bottom: 25px;
+			}
+			> div > div > label {
+				display: inline-block;
+			}
+			input[type=checkbox], input[type=checkbox] + label {
+				vertical-align: top;
+				margin-top: 5px;
+			}
+			input[type=checkbox] {
+				margin-top: 10px;
+			}
+			input[type=checkbox] + label {
+				margin-right: 50px;
+				
+			}
+			.search-header, .search-number {
+				width: 400px;
+			}
+			.search-address {
+				width: 300px;
+				margin-right: 10px;
+			}
+			.search-radius {
+				width: 50px;
+				margin-left: 5px;
+				margin-right: 5px;
+			}
+			.search-auto-region {
+				width: 50px;
+			}
+			.search-hint {
+				display: block;
+				padding-left: 5px;
+				font-size: 12px;
+				font-style: italic;
+				color: #aaa;
+				line-height: 0px;
+			}
+			.search-auto-block {
+				> div {
+					display: inline-block;
+				}
+				label {
+					display: inline-block;
+					margin: 0 5px 0 10px;
+				}
+				.search-auto-region + span {
+					margin-left: 65px;
+				}
+			}
+			.search-auto-number {
+				width: 130px;
+			}
+			.input-append {
+				margin-right: 20px;
+			}
 		}
 	}
 	.query-list,
@@ -149,6 +237,7 @@
 			-o-transition: background 400ms ease;
 			transition: background 400ms ease;
 			.query-info {
+				padding: 5px 0;
 				cursor: pointer;
 				-moz-transition: color 400ms ease;
 				-webkit-transition: color 400ms ease;
@@ -158,7 +247,6 @@
 			.answer-string,
 			.query-string {
 				margin: 10px 10px 10px 25px;
-				font-weight: bold;
 				> span {
 					display: inline-block;
 				}
@@ -175,11 +263,15 @@
 					width: 40px;					
 				}
 			}
-			.answer-string {
+			.answer-string  {	
+				margin-bottom: -5px;
 				display: none;
 			}
+			.number-string {
+				margin-left: 25px;
+			}
 			.query-title {
-				margin: 10px 10px 10px 25px;
+				margin: 0 10px 10px 25px;
 				line-height: 14px;
 				max-height: 50px;
 				overflow: hidden;
@@ -187,12 +279,12 @@
 				text-overflow: ellipsis;
 			}
 			> .query-info > .query-group-container,
-			> .query-info > .query-group-header {
+			 > .query-group-header {
 				visibility: hidden;
 				height: 0;
 			}
 			.expand {
-				background: url('../img/collapse-down.png') no-repeat center center;
+				background: url('../img/collapse-right.png') no-repeat center center;
 				-moz-transition: all 400ms ease;
 				-webkit-transition: all 400ms ease;
 				-o-transition: all 400ms ease;
@@ -220,52 +312,58 @@
 				content: ' ';
 				display: inline-block;
 				position: absolute;
-				margin-left: -20px;
-				margin-top: 10px;
-				height: 30px;
+				margin-left: -18px;
+				margin-top: 6px;
+				height: 32px;
 				width: 20px;
 				background: url('../img/query-answer.png') no-repeat;
 			}
 		}
 		.query.has-response.active {
 			> .query-info .answer-string:before{
-				background-position: 0 -32px;
+				background-position: 0 -31px;
 			}
 		}
 		.query.query-group {
-			> .query-info > .query-group-header {
+			
+			> .query-group-header {
 				visibility: visible;
 				height: auto;
 				margin-left: 5px;
-				margin-bottom: -10px;
-			}
-			> .query-group-header {
-				margin: 0 0 -10px 0;
+				margin-bottom: 0;
+				padding-bottom: 5px;
+				margin: 0;
 				padding-left: 5px;
+				padding-top: 5px;
+				cursor: pointer;
 			}
 			> .query-group-container {
 				border-top: 1px solid #e8e8e8;
+				margin-bottom: 10px;
+				.query:last-child {
+					border-bottom: none;
+				}
 			}
 		}
 		.query.query-group.expanded {
 			background-color: #ebf5fd;
+			box-shadow: inset 0 6px 6px -5px rgba(0, 0, 0, 0.1), inset 0 -8px 6px -5px rgba(0, 0, 0, 0.1);
 			.query {
-				background-color: #ebf5fd;
+				background-color: transparent;
 			}
 			.query.active {
-				background-color: #3b9fed;
+				background-color: #1587E0;
 			}
 			.expand {
-				-moz-transform: rotate(-90deg);
-				-webkit-transform: rotate(-90deg);
-				-o-transform: rotate(-90deg);
-				transform: rotate(-90deg);
+				-moz-transform: rotate(90deg);
+				-webkit-transform: rotate(90deg);
+				-o-transform: rotate(90deg);
+				transform: rotate(90deg);
 			}
 		}
 		.query.active,
 		.query.query-group.expanded.active {
-			background-color: #3b9fed;
-			 > .query {
+			> .query-info {
 				background-color: #3b9fed;
 			}
 		}
@@ -287,7 +385,7 @@
 			background-color: white;
 			border: 1px solid #EEEEEE;
 			padding: 20px 40px 10px 40px;
-			margin-bottom: 5px;
+			margin-bottom: 10px;
 		}
 		.date-block label{
 			display: table-cell;
@@ -296,8 +394,11 @@
 		}
 		label {
 			display: inline-block;
-			vertical-align: middle;
+			vertical-align: super;
 			width: 90px;
+		}
+		input.query-form-header {
+			margin-bottom: 15px;
 		}
 		input.query-form-header,
 		input.query-form-number
@@ -386,7 +487,7 @@
 						width: 50px;
 						border-radius: 50%;
 						height: 50px;
-						background: no-repeat url('http://localhost/apkbg/css/../img/button-close.png');
+						background: no-repeat url('../img/button-close.png');
 						background-size: cover;
 						opacity: 0.8;
 						cursor: pointer;
