@@ -1,11 +1,17 @@
 
-var map;
 (function($) {
 	'use strict';	
 	
-	function CityEvent(is_new) {
+	BASE_URL = BASE_URL || "localhost";
+	
+	function CityEvent(event_params) {
 		var that = this;
-		this.is_new = is_new;
+		this.is_new = event_params.is_new;
+		this.is_watch = event_params.is_watch;
+		this.watchers = $.getJSON(BASE_URL + '/operators', function() {
+			// enable watchers combobox in DOM
+			$('.camera-block').find('.supervisor').attr('disable', 'none');
+		});
 		// init datepickers
 		$(".datepicker-el").datetimepicker({
 			language: 'ru',
@@ -57,11 +63,16 @@ var map;
 		$('body').on('click', '.error', function() {
 			$(this).removeClass('error');
 		});
-		this.map = new CityMap(is_new);
-		if (!is_new) {
+		if (!this.is_new) {
 			$('#content').addClass('event-existing');
 			this.load_data();
 		}
+		if (this.is_watch) {
+			$('#content').addClass('event-watch');
+		}
+
+		$('body').removeClass('preloader');
+		this.map = new CityMap(this.is_new);
 		// initialize lightbox
 		$(".photos-list a").colorbox({
 			rel:'img-group',
@@ -86,8 +97,8 @@ var map;
 			this.map.fit_data_geo(data.geo);
 		},
 		fit_data_date: function(period) {
-			var date_start = new Date(period.start);
-			var date_end = new Date(period.end);
+			var date_start = new Date(period.start*1000);
+			var date_end = new Date(period.end*1000);
 			console.log(date_start, date_end);
 			// if times are in the same day
 			if((date_end - date_start) / (1000 * 60 * 60) < 24) {
@@ -181,8 +192,8 @@ var map;
 
 			// finally
 			period = {
-				start: date_start.setHours(0,0,0,0) + time_start,
-				end: date_end.setHours(0,0,0,0) + time_end
+				start: (date_start.setHours(0,0,0,0) + time_start)/1000,
+				end: (date_end.setHours(0,0,0,0) + time_end)/1000
 			};
 			return period;
 		}
@@ -366,6 +377,38 @@ var map;
 			template.attr('data-leaflet-id', layer._leaflet_id);
 			console.log(layer);
 			template.appendTo('section.right > .cameras-list');
+			this.get_cameras(type, layer, template);
+		},
+		get_cameras: function(type, layer, container) {
+			var data = {};
+			data.type = type;
+			switch (type) {
+				case 'marker':
+					data.latlng = layer.getLatLng()					
+					break;					
+				case 'circle':
+					data.latlng = layer.getLatLng();
+					data.center = layer.getRadius();
+					break;
+				case 'polygon':
+				case 'rectangle':
+				case 'polyline':
+					data.latlng = layer.getLatLngs();
+					break;
+			}
+			$.ajax({
+				type: "POST",
+				url: BASE_URL + '/cameras',
+				data: JSON.stringify(data),
+				success: function(cameras){
+					// fit cameras into container
+					container.find('.no-cameras-message').removeClass('preloader');
+				},
+				error: function() {
+					console.error('Failed to load cameras in area');
+					container.find('.no-cameras-message').removeClass('preloader');
+				} 
+			}); 	
 		},
 		setPopupAddress: function(layer) {
 			var latlng = new google.maps.LatLng(layer._latlng.lat, layer._latlng.lng);
@@ -455,13 +498,19 @@ var map;
 		}
 	}
 	$(document).ready(function() {
-		var event;
+		var event, event_params = {
+			is_new: true,
+			is_watch: false
+		};
 		if (window.location.hash == "#existing") {
-			// load existiong event
-			event = new CityEvent(false);
+			// load existing event to view post-factum
+			event_params.is_new = false;
 		}
-		else {
-			event = new CityEvent(true);
+		else if (window.location.hash == "#watch") {
+			// load existing event to watch
+			event_params.is_new = false;
+			event_params.is_watch = true;
 		}
+		event = new CityEvent(event_params);
 	});
 })(jQuery);

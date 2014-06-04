@@ -116,76 +116,6 @@
 					<div>Наименование события</div>
 					<div>Адрес</div>
 					<div>Кол-во подключенных камер</div>
-				</div>
-				<div class="event-row" data-name="Марш миллионов" data-address="Невский пр., 33" data-address="Невский пр., 33" data-start="1398243600000" data-end="1398243708000">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
-				</div>
-				<div class="event-row" data-name="Марш миллионов" data-address="Невский пр., 33" data-address="Невский пр., 33" data-start="1398243600000" data-end="1398243708000">
-					<div>23.04.14</div>
-					<div>13:00 - 15:00</div>
-					<div>Марш миллионов</div>
-					<div>Невский пр., 33</div>
-					<div>18</div>
 				</div>				
 			</div>
 			<div class="no-results">Не найдено ни одного события</div>
@@ -195,25 +125,28 @@
 		<span>2014</span>
 	</footer>
 	
-	<!-- route(polyline), address(marker), area(rect/polygon) -->
-	<article class="template section-info">
-		<h5>
-			<span></span>
-			<i class="info"></i>
-		</h5>
-		<div class="no-cameras-message">Не найдено ни одной камеры</div>
-	</article>
+	<div class="event-row template" data-name="" data-address="" data-start="" data-end="">
+		<div class="date-info">
+			<span class="date-from"></span>
+			<span>-</span>
+			<span class="date-to"></span>
+		</div>
+		<div>
+			<span class="time-from"></span>
+			<span>-</span>
+			<span class="time-to"></span>
+		</div>
+		<div></div>
+		<div></div>
+		<div></div>
+	</div>	
 	
-	<div class="template camera-block">
-		<input type="checkbox">
-		<label for="">
-			<span>1. Название камеры</span>
-			<span>Улица, дом</span>
-		</label>
-		<select name="" id="" class="block-in"></select>
-		<select name="" id="" class="supervisor"></select>
-	</div>
-	
+	<script>
+		var BASE_URL;
+		(function get_base_url() {
+			BASE_URL = 'http://10.1.30.3:7103/massevent';
+		})();
+	</script>
 	<script src="dry/js/jquery.js"></script>
 	<script src="dry/js/moment.js"></script>
 	<script src="dry/js/bootstrap-datetimepicker-min.js"></script>

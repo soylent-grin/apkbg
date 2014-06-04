@@ -173,3 +173,12 @@
 		var video_storage = new Video_Storage();
 	});
 })(jQuery);
+
+function test_cross_domain(type, url) {
+	url = url || "massevent/operators/";
+	type = type || "GET";
+	$.ajax({
+		type: type,
+		url: "http://10.1.30.3:7103/" + url,
+	});
+}

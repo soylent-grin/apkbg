@@ -1,3 +1,12 @@
+.preloader {
+	background-image: url('../img/preloader.gif');
+	background-position: 1px 1px;
+	background-repeat: no-repeat;
+	> * {
+		display: none;
+	}
+}
+
 .vertical-align() {
   position: relative;
   top: 50%;
@@ -257,7 +266,7 @@
 			}
 		}
 		.no-cameras-message {
-			padding-left: 15px;
+			margin-left: 15px;
 		}
 	}
 	.save-block {
@@ -346,6 +355,46 @@
 	}
 }
 
+#content.event-single.event-existing.event-watch {
+	background-color: black;
+	.breadcrumbs, 
+	.left {
+		display: none;
+	}
+	.center,
+	.right {
+		padding: 0;
+		bottom: 0;
+		height: 100%;
+	}
+	.center {
+		left: 0;
+		width: 75%;
+		height: -moz-calc(~"100% - 5px");
+		height: -webkit-calc(~"100% - 5px");
+		height: -o-calc(~"100% - 5px");
+		height: calc(~"100% - 5px");
+		> * {
+			display: none;
+		}
+		> #map-container {
+			display: block;
+			height: 100%;
+			width: 100%;
+			margin-top: 0;
+			
+		}
+	}
+	.right {
+		 h4:first-child {
+			 margin: 0;
+		 }
+		i.icon-download {
+			display: none;
+		}
+	}
+}
+
 // styles for event-overview.html
 .event-overview {
 	#content > .breadcrumbs {
@@ -394,6 +443,10 @@
 			margin-top: 0;
 		}
 	}
+	.date-info > span {
+		display: block;
+		line-height: normal;
+	}
 	.event-search {
 		.search-event-name, 
 		.search-event-address, {
@@ -412,6 +465,7 @@
 		.clean-search{
 			display: inline-block;
 			margin-left: 20px;
+			vertical-align: top;
 			line-height: 25px;
 		}
 	}
@@ -427,13 +481,13 @@
 		.list {
 			> div {
 				border-bottom: 1px solid #E7E7E7;
-				line-height: 35px;
-				height: 35px;
+				line-height: 50px;
+				height: 50px;
 				cursor: pointer;
 				> div {
 					display: inline-block;
 					padding: 0 20px;
-					height: 35px;
+					height: 50px;
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;

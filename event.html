@@ -20,7 +20,7 @@
 	<script src="dry/js/less.js"></script>	
 	
 </head>
-<body>
+<body class="preloader">
 	<header>
 		<div class="logo"></div>
 		<div class="message-block"></div>
@@ -155,7 +155,7 @@
 			<span></span>
 			<i class="info"></i>
 		</h5>
-		<div class="no-cameras-message">Не найдено ни одной камеры</div>
+		<div class="no-cameras-message  preloader">Не найдено ни одной камеры</div>
 	</article>
 	
 	<div class="template camera-block">
@@ -167,7 +167,12 @@
 		<select name="" id="" class="block-in"></select>
 		<select name="" id="" class="supervisor"></select>
 	</div>
-	
+	<script>
+		var BASE_URL;
+		(function get_base_url() {
+			BASE_URL = 'http://10.1.30.3:7103/massevent';
+		})();
+	</script>
 	<script src="dry/js/jquery.js"></script>
 	<script src="dry/js/moment.js"></script>
 	<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>

@@ -3,6 +3,14 @@
 	function get_period() {
 		var period = {};
 		var date_start, date_end, time_start, time_end;
+		if ($('#event-date-overall input').val() == "" &&
+			$('#event-date-from input').val() == "" &&
+			$('#event-date-to input').val() == "") {
+			return {
+				start: 0,
+				end: 2147483647000
+			}
+		}
 		if ($('#event-date-overall input').val() !== "") {
 			date_start = date_end = $('#event-date-overall').data('datetimepicker').getDate();
 		}
@@ -12,11 +20,17 @@
 		}		
 
 		// get milliseconds from the day start
-		time_start = $('#event-time-from').data('datetimepicker').getLocalDate().getTime();
-		time_start = new Date(time_start) - new Date(time_start).setHours(0, 0, 0, 0);
-		
-		time_end = $('#event-time-to').data('datetimepicker').getLocalDate().getTime();
-		time_end = new Date(time_end) - new Date(time_end).setHours(0, 0, 0, 0);
+		if ($('#event-time-from input').val() !== "" && $('#event-time-to input').val() !== "") {
+			time_start = $('#event-time-from').data('datetimepicker').getLocalDate().getTime();
+			time_start = new Date(time_start) - new Date(time_start).setHours(0, 0, 0, 0);
+
+			time_end = $('#event-time-to').data('datetimepicker').getLocalDate().getTime();
+			time_end = new Date(time_end) - new Date(time_end).setHours(0, 0, 0, 0);
+		}
+		else {
+			time_start = 0;
+			time_end = 1000*60*60*24 - 1;
+		}
 
 		// finally
 		period = {
@@ -26,6 +40,19 @@
 		return period;
 	}
 	
+	function set_period(period, container) {
+		var date_start = new Date(period.start*1000);
+		var date_end = new Date(period.end*1000);
+		console.log(date_start, date_end);
+		// if times are in the same day
+		container.find('.date-from').text(moment(date_start).format('DD.mm.YY'));
+		container.find('.time-from').text(moment(date_start).format('hh:mm'));
+		container.find('.time-to').text(moment(date_end).format('hh:mm'));
+		if((date_end - date_start) / (1000 * 60 * 60) > 24)  {
+			container.find('.date-to').text(moment(date_end).format('DD.mm.YY'));
+		}
+	}
+	
 	function show_event() {
 		var $this = $(this);
 		var url = "event.html#existing";
@@ -33,6 +60,15 @@
 		// some preparations
 		// ...
 		window.location = url;
+	}
+	
+	function add_event(data) {
+		if (data.period && data.name) {
+			var template = $('.event-row.template').clone(true).removeClass('template');
+			set_period(data.period, template);
+			template.find('div:nth-child(3)').text(data.name);
+			template.appendTo('.event-list .list');
+		}
 	}
 	
 	function search_events() {		
@@ -49,21 +85,26 @@
 		
 		$('.event-row:not(.template)').each(function(i, row) {
 			row = $(row);
-			if (name != '') {
-				if (row.attr('data-name').toLowerCase().indexOf(name) != -1) {
-					row.show();
-					return 1;
-				}
-			}
-			if (address != '') {
-				if (row.attr('data-address').toLowerCase().indexOf(address) != -1) {
-					row.show();
-					return 1;
-				}
-			}
 			if (row.attr('data-start') > period.start && row.attr('data-end') < period.end) {
 				row.show();
-			}
+				if (name != '') {
+					if (row.attr('data-name').toLowerCase().indexOf(name) != -1) {
+						row.show();
+						return 1;
+					} else {
+						row.hide();
+					}
+				}
+				if (address != '') {
+					console.log(row.attr('data-address').toLowerCase());
+					if (row.attr('data-address').toLowerCase().indexOf(address) != -1) {
+						row.show();
+						return 1;
+					} else {
+						row.hide();
+					}
+				}
+			}			
 			else {
 				row.hide();
 			}
@@ -77,6 +118,11 @@
 	}
 	
 	$(document).ready(function() {
+		$.getJSON('events.json', function(data) {
+			for (var i = 0; i < data.length; i++) {
+				add_event(data[i]);
+			}
+		});
 		// init datepickers
 		$(".datepicker-el").datetimepicker({
 			language: 'ru',

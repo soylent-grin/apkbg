@@ -435,7 +435,12 @@
 		<div class="query-group-container">
 		</div>
 	</div>	
-	
+	<script>
+		var BASE_URL;
+		(function get_base_url() {
+			BASE_URL = 'http://10.1.30.3:7103/massevent';
+		})();
+	</script>
 	<script src="dry/js/jquery.js"></script>
 	<script src="dry/js/moment.js"></script>
 	<script src="dry/js/bootstrap-datetimepicker-min.js"></script>
