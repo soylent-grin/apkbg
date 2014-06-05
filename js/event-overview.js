@@ -34,8 +34,8 @@
 
 		// finally
 		period = {
-			start: date_start.setHours(0,0,0,0) + time_start,
-			end: date_end.setHours(0,0,0,0) + time_end
+			start: (date_start.setHours(0,0,0,0) + time_start) / 1000,
+			end: (date_end.setHours(0,0,0,0) + time_end) / 1000
 		};
 		return period;
 	}
@@ -45,11 +45,14 @@
 		var date_end = new Date(period.end*1000);
 		console.log(date_start, date_end);
 		// if times are in the same day
-		container.find('.date-from').text(moment(date_start).format('DD.mm.YY'));
-		container.find('.time-from').text(moment(date_start).format('hh:mm'));
-		container.find('.time-to').text(moment(date_end).format('hh:mm'));
+		container.find('.date-from').text(moment(date_start).format('DD.MM.YY'));
+		container.find('.time-from').text(moment(date_start).format('HH:mm'));
+		container.find('.time-to').text(moment(date_end).format('HH:mm'));
 		if((date_end - date_start) / (1000 * 60 * 60) > 24)  {
-			container.find('.date-to').text(moment(date_end).format('DD.mm.YY'));
+			container.find('.date-to').text(moment(date_end).format('DD.MM.YY'));
+		}
+		else {
+			container.find('.date-info').find('span:nth-child(2)').hide();
 		}
 	}
 	
@@ -67,6 +70,12 @@
 			var template = $('.event-row.template').clone(true).removeClass('template');
 			set_period(data.period, template);
 			template.find('div:nth-child(3)').text(data.name);
+			template.find('div:nth-child(4)').text(data.address);
+			template.find('div:nth-child(5)').text(data.cameras.length);
+			template.attr('data-name', data.name)
+					.attr('data-address', data.address)
+					.attr('data-start', data.period.start)
+					.attr('data-end', data.period.end);
 			template.appendTo('.event-list .list');
 		}
 	}
@@ -79,7 +88,7 @@
 			}
 		}		
 		var period = get_period();
-		console.log('Searching events from ' + new Date(period.start) + ' to ' + new Date(period.end));
+		console.log('Searching events from ' + new Date(period.start*1000) + ' to ' + new Date(period.end*1000));
 		var name = $('.search-event-name').val().toLowerCase();
 		var address = $('.search-event-address').val().toLowerCase();
 		
@@ -142,7 +151,7 @@
 			else {
 				$('#event-date-from, #event-date-to').find('input').removeClass('disabled');
 			}
-			search_events();
+			//search_events();
 		});
 		$("#event-date-from").on('changeDate', function () {
 			var input = $(this).find('input');
@@ -153,7 +162,7 @@
 			else {
 				$('#event-date-overall').find('input').removeClass('disabled');
 			}
-			search_events();
+			//search_events();
 		});		
 		// set max and min date according to period
 		$("#event-date-from").on('changeDate', function () {		

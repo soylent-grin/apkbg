@@ -7,7 +7,7 @@
 	<meta name="viewport" content="initial-scale = 1.0, maximum-scale=1.0, user-scalable = no, width=device-width" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 
-	<title>Безопасный город / Создание события</title>
+	<title>Безопасный город | Наблюдение</title>
 	<!-- styles -->
 	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="dry/css/bootstrap-datetimepicker-min.css">
@@ -26,98 +26,14 @@
 		<div class="message-block"></div>
 		<div class="user-info"></div>
 	</header>
-	<div id="content" class="event-single">		
-		<div class="breadcrumbs">
-			<a href="event-overview.html" class="to-main-menu">Все события</a>
-			<a href="#" class="to-sub-menu active">Новое</a>
-		</div>
-		<section class="left">
-			<h4>Событие</h4>
-			<div class="event-info table">
-				<div>
-					<label for="">Название</label>
-					<textarea id="event-name"></textarea>
-				</div>
-				<div>
-					<label for="">Описание</label>
-					<textarea id="event-description"></textarea>
-				</div>
-				<div>
-					<label for="">Класс</label>
-					<select id="event-class">
-						<option value="meeting" selected>Мимимитинг</option>
-					</select>
-				</div>
-				<div>
-					<label for="">Адрес</label>
-					<input type="text" id="event-address">
-				</div>
-			</div>
-			<div class="date-block table">
-				<div>
-					<label for="">Дата</label>
-					<div>
-						<div class="">
-							<div id="event-date-overall" class="input-append datepicker-el">
-								<input data-format="yyyy-MM-dd" type="text"></input>
-								<span class="add-on">
-									<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-								</span>
-							</div>
-							<span>или</span>
-						</div>
-						<div>
-							<div class="input-wrapper">								
-								<span>c</span>
-								<div id="event-date-from" class="input-append datepicker-el">
-									<input data-format="yyyy-MM-dd" type="text"></input>
-									<span class="add-on">
-										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-									</span>
-								</div>
-							</div>
-							<div class="input-wrapper">	
-								<span>по</span>
-								<div id="event-date-to" class="input-append datepicker-el">
-									<input data-format="yyyy-MM-dd" type="text"></input>
-									<span class="add-on">
-										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-									</span>
-								</div>
-							</div>
-						</div>					
-					</div>
-				</div>
-				<div>
-					<label for="">Время</label>
-					<div>
-						<div>
-							<div class="input-wrapper">	
-								<span>c</span>
-								<div id="event-time-from" class="input-append timepicker-el">
-									<input data-format="hh:mm:ss" type="text"></input>
-									<span class="add-on">
-										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-									</span>
-								</div>
-							</div>
-							<div class="input-wrapper">	
-								<span>по</span>
-								<div id="event-time-to" class="input-append timepicker-el">
-									<input data-format="hh:mm:ss" type="text"></input>
-									<span class="add-on">
-										<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-									</span>
-								</div>
-							</div>
-						</div>					
-					</div>
-				</div>
-			</div>
-		</section>
+	<div id="content" class="event-single event-watch">	
 		<section class="center">
 			<h4>Выбор камер</h4>
-			<span class="hint">Отметьте маршрут или область с помощью инструмента на карте</span>
+			<label for="">Адрес</label>
+			<input type="text" id="cameras-address">
+			<label for="">Радиус</label>
+			<input type="number" id="cameras-radius" min="0" value="0"  step="0.1"><span>км</span>
+			<span class="hint">Введите адрес или отметьте маршрут с помощью инструмента на карте</span>
 			<div id="map-container"></div>
 		</section>
 		<section class="right">
@@ -133,9 +49,6 @@
 				<a href="content/6.jpg" class="img-group"><img src="content/6.jpg" alt=""></a>
 			</div>		
 		</section>
-		<div class="save-block">
-			<button class="button">Сохранить</button>
-		</div>
 		<div class="popup-error">
 			<div>
 				<p>Недостаточно места в оперативном архиве</p>
@@ -161,8 +74,8 @@
 	<div class="template camera-block">
 		<input type="checkbox">
 		<label for="">
-			<span class="camera-name">1. Название камеры</span>
-			<span class="camera-address">Улица, дом</span>
+			<span>1. Название камеры</span>
+			<span>Улица, дом</span>
 		</label>
 		<select name="" id="" class="block-in"></select>
 		<select name="" id="" class="supervisor"></select>

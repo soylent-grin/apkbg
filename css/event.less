@@ -2,6 +2,7 @@
 	background-image: url('../img/preloader.gif');
 	background-position: 1px 1px;
 	background-repeat: no-repeat;
+	font-size: 0;
 	> * {
 		display: none;
 	}
@@ -122,6 +123,7 @@
 			padding-bottom: 20px;
 			select {
 				width: 100%;
+				margin-bottom: 10px;
 			}
 			textarea {
 				margin-bottom: 10px;
@@ -131,14 +133,23 @@
 			#event-description {
 				height: 100px;
 			}
-		}		
+			input {
+				width: 100%;
+				margin: 0
+			}
+		}	
+		> .date-block {
+			label {
+				width: 60px;
+			}
+		}
 	}
 	.center {
 		left: 25%;
 		width: 50%;
 		padding: 15px;
 		h4 {
-			margin-bottom: 15px;
+			margin-bottom: 0;
 		}
 		input {
 			margin-left: 5px;			
@@ -162,13 +173,14 @@
 			display: block;
 			font-size: 10px;
 			font-style: italic;
-			margin-left: 40px;
 		}
 		#map-container {
-			margin-top: 10px;
 			width: 100%;
 			min-height: 500px;
-			height: 85%;
+			height: -moz-calc(~"100% - 50px");
+			height: -webkit-calc(~"100% - 50px");
+			height: -o-calc(~"100% - 50px");
+			height: calc(~"100% - 50px");
 			border: 1px solid #EEEEEE;
 			background: #ededed;
 		}
@@ -227,11 +239,7 @@
 		}
 		.cameras-list {
 			padding-bottom: 20px;
-			max-height: 50%;
-			max-height: -moz-calc(~"60% - 45px");
-			max-height: -webkit-calc(~"60% - 45px");
-			max-height: -o-calc(~"60% - 45px");
-			max-height: calc(~"60% - 45px");
+			max-height: 100%;
 			width: 100%;
 			position: relative;
 			overflow-x: auto;
@@ -355,7 +363,7 @@
 	}
 }
 
-#content.event-single.event-existing.event-watch {
+#content.event-single.event-watch {
 	background-color: black;
 	.breadcrumbs, 
 	.left {
@@ -443,10 +451,7 @@
 			margin-top: 0;
 		}
 	}
-	.date-info > span {
-		display: block;
-		line-height: normal;
-	}
+	
 	.event-search {
 		.search-event-name, 
 		.search-event-address, {
@@ -485,8 +490,8 @@
 				height: 50px;
 				cursor: pointer;
 				> div {
-					display: inline-block;
-					padding: 0 20px;
+					float: left;
+					padding: 0 0 0 20px;
 					height: 50px;
 					overflow: hidden;
 					text-overflow: ellipsis;
@@ -514,8 +519,29 @@
 			> div:active {
 				background-color: #dbdbdb;
 			}
+			.date-info {
+				display: table;
+				float: left;
+				line-height: 20px;
+				text-overflow: clip;
+				white-space: normal;
+				position: relative;
+				> div {
+					display: table-cell;
+					vertical-align: middle;
+				}
+				span {
+					vertical-align: middle;
+					display: inline-block;
+					line-height: 10px;
+				}
+				span:nth-child(3) {
+					display: block;
+				}
+			}
 			> div.list-header {
 				padding-top: 20px;
+				height: 50px;
 				padding-bottom: 10px;
 				height: auto;
 				cursor: default;

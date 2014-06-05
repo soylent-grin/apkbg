@@ -4,13 +4,24 @@
 	
 	BASE_URL = BASE_URL || "localhost";
 	
+	//string formatting god, follow him!
+	String.prototype.format = function() {
+		var pattern = /\{\d+\}/g;
+		var args = arguments;
+		return this.replace(pattern, function(capture){ return args[capture.match(/\d+/)]; });
+	};
+	
 	function CityEvent(event_params) {
 		var that = this;
 		this.is_new = event_params.is_new;
-		this.is_watch = event_params.is_watch;
-		this.watchers = $.getJSON(BASE_URL + '/operators', function() {
+		this.watchers = $.getJSON('operators.json', function(data) {
+			that.operators = data;
 			// enable watchers combobox in DOM
+			$.each(data, function(i, operator) {
+				$('.camera-block').find('.supervisor').append("<option value={0}>{1}</option>".format(operator.id, operator.name));			
+			});
 			$('.camera-block').find('.supervisor').attr('disable', 'none');
+			console.log(that.operators);
 		});
 		// init datepickers
 		$(".datepicker-el").datetimepicker({
@@ -67,10 +78,7 @@
 			$('#content').addClass('event-existing');
 			this.load_data();
 		}
-		if (this.is_watch) {
-			$('#content').addClass('event-watch');
-		}
-
+		
 		$('body').removeClass('preloader');
 		this.map = new CityMap(this.is_new);
 		// initialize lightbox
@@ -120,6 +128,7 @@
 					'name': $('#event-name').val(),
 					'desc': $('#event-description').val(),
 					'class': $('#event-class').val(),
+					'address': $('#event-address').val(),
 					'period': this.get_period(),
 					'geo': this.map.get_geo()
 				};
@@ -153,10 +162,13 @@
 				$('#event-time-to input').addClass('error');
 				flag = false;
 			}
-			if ($('#event-time-to').data('datetimepicker').getDate() < $('#event-time-from').data('datetimepicker').getDate()) {
-				$('#event-time-to, #event-time-from').find('input').addClass('error');
-				flag = false;
+			if ($('#event-date-to').data('datetimepicker').getDate() <= $('#event-date-from').data('datetimepicker').getDate()) {
+				if ($('#event-time-to').data('datetimepicker').getDate() < $('#event-time-from').data('datetimepicker').getDate()) {
+					$('#event-time-to, #event-time-from').find('input').addClass('error');
+					flag = false;
+				}
 			}
+			
 			if ($('.section-info:not(.template)').length == 0) {
 				$('#cameras-address').addClass('error');
 				flag = false;
@@ -170,7 +182,7 @@
 		},
 		is_valid_cameras: function() {
 			// dummy for camera validation
-			return $('.section-info:not(.template)').length < 5;
+			return $('.section-info:not(.template)').length < 10;
 		},
 		get_period: function() {
 			var period = {};
@@ -192,9 +204,10 @@
 
 			// finally
 			period = {
-				start: (date_start.setHours(0,0,0,0) + time_start)/1000,
-				end: (date_end.setHours(0,0,0,0) + time_end)/1000
+				start: parseInt((date_start.setHours(0,0,0,0) + time_start)/1000),
+				end: parseInt((date_end.setHours(0,0,0,0) + time_end)/1000)
 			};
+			console.log(period.start*1000, period.end*1000);
 			return period;
 		}
 	};
@@ -263,7 +276,9 @@
 								fill: false
 							}),
 						},
-						circle: false,
+						circle: {
+							shapeOptions: this.options.draw,
+						},
 						rectangle: {
 							shapeOptions: this.options.draw,
 						},
@@ -282,9 +297,9 @@
 				var type = e.layerType,
 					layer = e.layer;
 				
-				that.build_section_info(type, layer);
-
 				that.drawnItems.addLayer(layer);
+				var el = that.build_section_info(type, layer);				
+				that.get_cameras(type, layer, el);
 			});
 			
 			this.map.on('draw:deleted', function (e) {
@@ -325,6 +340,7 @@
 				}
 			});
 			
+			/*
 			$('#cameras-address').geocomplete().bind("geocode:result", function(event, result){
 				var coords = L.latLng(result.geometry.location.k, result.geometry.location.A)
 				that.map.setView(coords);
@@ -342,7 +358,12 @@
 				else {
 					L.setView(coords);
 				}
-			});		
+			});
+			*/
+		},
+		create_camera_marker: function(position) {
+			var marker = L.marker([position[0], position[1]], {icon: new this.options.Address_Marker()}).addTo(this.drawnItems);
+			return marker;
 		},
 		build_section_info: function(type, layer) {
 			$('#cameras-address').removeClass('error');
@@ -377,38 +398,72 @@
 			template.attr('data-leaflet-id', layer._leaflet_id);
 			console.log(layer);
 			template.appendTo('section.right > .cameras-list');
-			this.get_cameras(type, layer, template);
+			return template;
+			//this.get_cameras(type, layer, template);
 		},
 		get_cameras: function(type, layer, container) {
 			var data = {};
+			var that = this;
+			var url = 'http://10.1.30.41:9000/massevent/videosources/';
 			data.type = type;
 			switch (type) {
 				case 'marker':
 					data.latlng = layer.getLatLng()					
 					break;					
 				case 'circle':
-					data.latlng = layer.getLatLng();
-					data.center = layer.getRadius();
+					data.latitude = layer.getLatLng().lat;
+					data.longitude = layer.getLatLng().lng;
+					data.radius = layer.getRadius()/1000;
+					url += 'in/circle/';
 					break;
 				case 'polygon':
 				case 'rectangle':
 				case 'polyline':
-					data.latlng = layer.getLatLngs();
+					data = [];
+					var latlangs = layer.getLatLngs();
+					for (var i=0; i < latlangs.length; i++) {
+						data.push([latlangs[i].lat, latlangs[i].lng]);
+					}
+					url += 'in/polygon/';
 					break;
 			}
+			url = "/cameras.json";
+			$.getJSON("cameras.json", function(cameras) {
+				console.log(cameras);
+				// fit cameras into container
+				for (var i = 0; i < cameras.length; i++) {						
+					var camera_block = $('.template.camera-block').clone(true).removeClass('template');
+					camera_block.find(".camera-name").text(cameras[i].name);
+					var marker = that.create_camera_marker(cameras[i].position);
+					camera_block.data('marker', marker).appendTo(container);
+				}
+				container.find('.no-cameras-message').removeClass('preloader');
+			});
+			/*
 			$.ajax({
-				type: "POST",
-				url: BASE_URL + '/cameras',
-				data: JSON.stringify(data),
+				dataType: "json",
+				//type: "POST",
+				url: url,
+				//contentType: "application/json",
+				//data: JSON.stringify(data),
+				//crossDomain: true,
 				success: function(cameras){
+					console.log(cameras);
 					// fit cameras into container
+					for (var i = 0; i < cameras.length; i++) {						
+						var camera_block = $('.template.camera-block').clone(true).removeClass('template');
+						camera_block.find(".camera-name").text(cameras[i].name);
+						var marker = that.map.create_camera_marker(cameras[i].position);
+						camera_block.data('marker', marker).appendTo(container);
+					}
 					container.find('.no-cameras-message').removeClass('preloader');
 				},
 				error: function() {
 					console.error('Failed to load cameras in area');
 					container.find('.no-cameras-message').removeClass('preloader');
 				} 
-			}); 	
+			}); 
+			*/
 		},
 		setPopupAddress: function(layer) {
 			var latlng = new google.maps.LatLng(layer._latlng.lat, layer._latlng.lng);
@@ -436,31 +491,31 @@
 				if ($(section).hasClass('area')) {
 					points = [];
 					for (i = 0; i < layer._latlngs.length; i++) {
-						points.push({
-							lat: layer._latlngs[i].lat,
-							lng: layer._latlngs[i].lng,
-						});
+						points.push([
+							layer._latlngs[i].lat,
+							layer._latlngs[i].lng,
+						]);
 					}
 					data.areas.push(points);					
 				} else if ($(section).hasClass('route')) {
 					points = [];
 					for (i = 0; i < layer._latlngs.length; i++) {
-						points.push({
-							lat: layer._latlngs[i].lat,
-							lng: layer._latlngs[i].lng,
-						});
+						points.push([
+							layer._latlngs[i].lat,
+							layer._latlngs[i].lng,
+						]);
 					}
 					data.routes.push(points);					
 				} else if ($(section).hasClass('address')) {
-					data.addresses.push({
-						lat: layer._latlng.lat,
-						lng: layer._latlng.lng,
-					});
+					data.addresses.push([
+						layer._latlng.lat,
+						layer._latlng.lng,
+					]);
 				} else if ($(section).hasClass('circle')) {
 					data.circles.push({
-						lat: layer._latlng.lat,
-						lng: layer._latlng.lng,
-						radius: layer._mRadius
+						latitude : layer._latlng.lat,
+						longitude : layer._latlng.lng,
+						radius : (layer._mRadius/1000).toFixed(3)
 					});
 				}
 			});
@@ -485,12 +540,12 @@
 				counter++;
 			}
 			for (i = 0; i < geo.circles.length; i++) {
-				layer = L.circle([geo.circles[i].lat, geo.circles[i].lng], geo.circles[i].radius, that.options.draw).addTo(this.drawnItems);
+				layer = L.circle([geo.circles[i].latitude, geo.circles[i].longitude], geo.circles[i].radius*1000, that.options.draw).addTo(this.drawnItems);
 				this.build_section_info('circle', layer);
 				counter++;
 			}
 			for (i = 0; i < geo.addresses.length; i++) {
-				layer = L.marker([geo.addresses[i].lat, geo.addresses[i].lng], {icon: new that.options.Address_Marker()}).addTo(this.drawnItems);
+				layer = L.marker([geo.addresses[i][0], geo.addresses[i][1]], {icon: new that.options.Address_Marker()}).addTo(this.drawnItems);
 				this.build_section_info('marker', layer);
 				counter++;
 			}
@@ -499,17 +554,11 @@
 	}
 	$(document).ready(function() {
 		var event, event_params = {
-			is_new: true,
-			is_watch: false
+			is_new: true
 		};
 		if (window.location.hash == "#existing") {
 			// load existing event to view post-factum
 			event_params.is_new = false;
-		}
-		else if (window.location.hash == "#watch") {
-			// load existing event to watch
-			event_params.is_new = false;
-			event_params.is_watch = true;
 		}
 		event = new CityEvent(event_params);
 	});
