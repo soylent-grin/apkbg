@@ -18,9 +18,8 @@
 			that.operators = data;
 			// enable watchers combobox in DOM
 			$.each(data, function(i, operator) {
-				$('.camera-block').find('.supervisor').append("<option value={0}>{1}</option>".format(operator.id, operator.name));			
+				$('.camera-block').find('.operator').append("<option value={0}>{1}</option>".format(operator.id, operator.name));			
 			});
-			$('.camera-block').find('.supervisor').attr('disable', 'none');
 			console.log(that.operators);
 		});
 		// init datepickers
@@ -102,7 +101,7 @@
 			$('#event-description').val(data.desc);
 			$('#event-class').val(data.class);
 			this.fit_data_date(data.period);
-			this.map.fit_data_geo(data.geo);
+			this.map.fit_geo(data.geo, data.videosources);
 		},
 		fit_data_date: function(period) {
 			var date_start = new Date(period.start*1000);
@@ -126,11 +125,12 @@
 			if (this.is_valid_event()) {
 				var data = {
 					'name': $('#event-name').val(),
-					'desc': $('#event-description').val(),
-					'class': $('#event-class').val(),
+					'description': $('#event-description').val(),
+					'type': $('#event-class').val(),
 					'address': $('#event-address').val(),
 					'period': this.get_period(),
-					'geo': this.map.get_geo()
+					'geo': this.map.get_geo(),
+					'videosources': this.map.get_videosources()
 				};
 				
 				$.ajax({
@@ -223,21 +223,36 @@
 					iconUrl: 'img/address-marker.svg',
 				}
 			}),
-			Selected_Address_Marker: L.Icon.extend({
+			Address_Selected_Marker: L.Icon.extend({
 				options: {
 					shadowUrl: null,
 					iconAnchor: new L.Point(15, 15),
 					iconSize: new L.Point(30, 30),
-					iconUrl: 'img/selected-address-marker.svg',
+					iconUrl: 'img/address-selected-marker.svg',
+				}
+			}),
+			Camera_Marker: L.divIcon({
+				iconAnchor: new L.Point(22, 50),
+				iconSize: new L.Point(45, 50),
+				popupAnchor:  [0, -40],
+				html: '1',
+				className: 'leaflet-camera-icon'
+			}),
+			Camera_Selected_Marker: L.Icon.extend({
+				options: {
+					shadowUrl: null,
+					iconSize: [150, 102],
+					iconAnchor: [42, 102],
+					iconUrl: 'img/camera-selected-marker.png',
 				}
 			}),
 			draw: {
 				stroke: true,
-				color: '#f00',
-				weight: 3,
+				color: '#ec8584',
+				weight: 2,
 				opacity: 0.7,
-				fill: '#f00',
-				fillOpacity: 0.2, 
+				fillColor: '#b6bcbf',
+				fillOpacity: 0.3, 
 				clickable: true
 			}
 		};
@@ -247,7 +262,8 @@
 		constructor: CityMap,
 		init: function(is_new) {
 			var that = this;
-			this.markers = [];
+			this.address_markers = [];
+			this.camera_markers = {};
 			this.map = L.map('map-container').setView([59.94, 30.35], 13);
 			L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 				maxZoom: 18,
@@ -287,7 +303,9 @@
 						}
 					},
 					edit: {
-						featureGroup: this.drawnItems
+						featureGroup: this.drawnItems,
+						// TODO: support the @edit@ function
+						edit: false
 					}
 				});
 				this.map.addControl(drawControl);
@@ -295,36 +313,40 @@
 
 			this.map.on('draw:created', function (e) {
 				var type = e.layerType,
-					layer = e.layer;
-				
+					layer = e.layer;				
 				that.drawnItems.addLayer(layer);
-				var el = that.build_section_info(type, layer);				
-				that.get_cameras(type, layer, el);
+				that.create_area(layer, type);				
 			});
+			
+			/*
+			// TODO: support the @edit@ function
+			this.map.on('draw:edited', function (e) {
+				var layers = e.layers;
+				that.delete_area(layers);
+				layers.eachLayer(function (layer) {
+					debugger
+					//that.create_area(layer, type);
+				});									
+			});
+			*/
 			
 			this.map.on('draw:deleted', function (e) {
-				console.log(e);
-				for (var leaflet_id in e.layers._layers) {
-					$('.section-info:not(.template)').each(function(i, section) {
-						if ($(section).data('layer')._leaflet_id == leaflet_id ) {
-							$(section).remove();
-						}
-					});
-				}
+				that.delete_area(e.layers);
+				that.update_cameras_numbers();
 			});
 			
-			$('.right').on('hover', '.section-info', function() {
-				var $this = $(this);
+			$('.right').on('click', '.section-info .info', function() {
+				var $this = $(this).parents('.section-info');
 				var layer = $this.data('layer');
 				// set default
 				$('svg path').attr('stroke-dasharray', "");
-				for (var i = 0; i < that.markers.length; i++) {
-					that.markers[i].setIcon(new that.options.Address_Marker());
+				for (var i = 0; i < that.address_markers.length; i++) {
+					that.address_markers[i].setIcon(new that.options.Address_Marker());
 				}
 				// select marker or svg
 				if (!$this.hasClass('active-info')) {		
 					if (layer._icon) {
-						layer.setIcon(new that.options.Selected_Address_Marker());
+						layer.setIcon(new that.options.Address_Selected_Marker());
 						//layer.fire('click');
 					}
 					else if (layer._container) {
@@ -338,6 +360,32 @@
 				else {					
 					$('.active-info').removeClass('active-info');
 				}
+			});
+			
+			$('.right').on('click', '.camera-block', function(e) {
+				var $this = $(this);
+				var layer = $this.data('camera').marker;
+				// select marker or svg
+				$('.camera-active').removeClass('camera-active');
+				$this.addClass('camera-active');
+				layer.openPopup();
+			});
+			
+			$('.right').on('click', '.camera-block > label', function(e) {
+				e.stopPropagation();
+				$(this).siblings('input[type=checkbox]').click();
+			});
+			
+			$('.right').on('change', '.camera-block input[type=checkbox]', function() {
+			var icon = $($($(this).parent()).data('camera').marker._icon);
+				icon.toggleClass('leaflet-selected-camera-icon');
+				if ($(this).prop('checked')) {
+					$(this).parent().find('.operator').removeAttr('disabled');
+				}		
+				else {
+					$(this).parent().find('.operator').attr('disabled', 'disabled');
+				}	
+				$('.selected-cameras').text($('.camera-block input[type=checkbox]:checked').length);
 			});
 			
 			/*
@@ -361,9 +409,52 @@
 			});
 			*/
 		},
-		create_camera_marker: function(position) {
-			var marker = L.marker([position[0], position[1]], {icon: new this.options.Address_Marker()}).addTo(this.drawnItems);
+		create_camera_marker: function(position, state) {
+			var marker = L.marker([position[0], position[1]], {icon: this.options.Camera_Marker}).on('mouseover', function() {
+				$('.camera-active').removeClass('camera-active');
+				$('.camera-block[leaflet-id={0}]'.format(this._leaflet_id)).addClass('camera-active');
+			}).on('mouseout', function() {
+				$('.camera-block[leaflet-id={0}]'.format(this._leaflet_id)).removeClass('camera-active');
+			});
+			
+			marker.addTo(this.drawnItems);
+			if (state != 1) {
+				$(marker._icon).addClass('leaflet-disabled-camera-icon');
+			}
 			return marker;
+		},
+		delete_camera_marker: function(camera) {
+			delete this.camera_markers[camera.id];
+			this.map.removeLayer(camera.marker);
+		},
+		update_cameras_numbers: function() {
+			var marker,
+				that = this;
+			$('.section-info .camera-block').each(function(i, camera_block) {
+				camera_block = $(camera_block);
+				marker = camera_block.data('camera').marker;
+				camera_block.find('.camera-name').text('{0}. {1}'.format(i+1, camera_block.data('camera').name));
+				marker._icon.innerHTML = i+1;
+			});
+		},
+		create_area: function(layer, type) {
+			var el = this.build_section_info(type, layer);				
+			this.set_cameras(type, layer, el);
+		},
+		delete_area: function(layers) {
+			var that = this;
+			for (var leaflet_id in layers._layers) {
+				$('.section-info:not(.template)').each(function(i, section) {
+					if ($(section).data('layer')._leaflet_id == leaflet_id ) {
+						var cameras = $(section).find('.camera-block');
+						for (var i = 0; i < cameras.length; i++) {
+							that.delete_camera_marker($(cameras[i]).data('camera'));
+						}
+						$(section).remove();
+					}
+				});
+			}
+			console.log(this.camera_markers);
 		},
 		build_section_info: function(type, layer) {
 			$('#cameras-address').removeClass('error');
@@ -373,7 +464,7 @@
 				case 'marker':
 					header = 'Адрес';
 					clazz = 'address';
-					this.markers.push(layer);
+					this.address_markers.push(layer);
 					this.setPopupAddress(layer);
 					break;					
 				case 'circle':
@@ -399,16 +490,19 @@
 			console.log(layer);
 			template.appendTo('section.right > .cameras-list');
 			return template;
-			//this.get_cameras(type, layer, template);
+			//this.set_cameras(type, layer, template);
 		},
-		get_cameras: function(type, layer, container) {
+		set_cameras: function(type, layer, container) {
 			var data = {};
 			var that = this;
 			var url = 'http://10.1.30.41:9000/massevent/videosources/';
 			data.type = type;
 			switch (type) {
 				case 'marker':
-					data.latlng = layer.getLatLng()					
+					data.latitude = layer.getLatLng().lat;
+					data.longitude = layer.getLatLng().lng;
+					data.radius = 0.05;
+					url += 'in/circle/';
 					break;					
 				case 'circle':
 					data.latitude = layer.getLatLng().lat;
@@ -427,6 +521,7 @@
 					url += 'in/polygon/';
 					break;
 			}
+			/*
 			url = "/cameras.json";
 			$.getJSON("cameras.json", function(cameras) {
 				console.log(cameras);
@@ -439,31 +534,23 @@
 				}
 				container.find('.no-cameras-message').removeClass('preloader');
 			});
-			/*
+			*/
 			$.ajax({
 				dataType: "json",
-				//type: "POST",
+				type: "POST",
 				url: url,
-				//contentType: "application/json",
-				//data: JSON.stringify(data),
-				//crossDomain: true,
+				contentType: "application/json",
+				data: JSON.stringify(data),
+				crossDomain: true,
 				success: function(cameras){
-					console.log(cameras);
-					// fit cameras into container
-					for (var i = 0; i < cameras.length; i++) {						
-						var camera_block = $('.template.camera-block').clone(true).removeClass('template');
-						camera_block.find(".camera-name").text(cameras[i].name);
-						var marker = that.map.create_camera_marker(cameras[i].position);
-						camera_block.data('marker', marker).appendTo(container);
-					}
+					that.fit_cameras(cameras, container);					
 					container.find('.no-cameras-message').removeClass('preloader');
 				},
 				error: function() {
 					console.error('Failed to load cameras in area');
 					container.find('.no-cameras-message').removeClass('preloader');
 				} 
-			}); 
-			*/
+			}); 			
 		},
 		setPopupAddress: function(layer) {
 			var latlng = new google.maps.LatLng(layer._latlng.lat, layer._latlng.lng);
@@ -477,6 +564,25 @@
 				} 
 			});
 		},
+		get_videosources: function() {
+			var cameras = {};
+			var camera, operator;
+			$('.camera-block:not(.template) input[type=checkbox]').each(function(i, input) {
+				camera = $(input).parents('.camera-block').data('camera');
+				operator = $(input).prop('checked') ? $(input).parents('.camera-block').find('.operator').val() : "";
+				cameras[camera.id] = {
+					id: camera.id,
+					name: camera.name,
+					operator: operator,
+					position: [
+						camera.marker._latlng.lat,
+						camera.marker._latlng.lng
+					]
+				};
+				
+			});
+			return cameras;
+		},
 		get_geo: function() {
 			var layer;
 			var data = {
@@ -488,15 +594,26 @@
 			var points, i;
 			$('.section-info:not(.template)').each(function(i, section) {
 				layer = $(section).data('layer');
+				// get selected cameras in area
+				var videosources = [];
+				$(section).find('.camera-block input[type=checkbox]:checked').each(function(i, camera) {
+					camera = $(this).parents('.camera-block'); 
+					console.log($(camera).data('camera'));
+					videosources.push($(camera).data('camera').id);
+					
+				});
 				if ($(section).hasClass('area')) {
 					points = [];
 					for (i = 0; i < layer._latlngs.length; i++) {
 						points.push([
 							layer._latlngs[i].lat,
-							layer._latlngs[i].lng,
+							layer._latlngs[i].lng
 						]);
 					}
-					data.areas.push(points);					
+					data.areas.push({
+						coords: points,
+						videosources: videosources
+					});					
 				} else if ($(section).hasClass('route')) {
 					points = [];
 					for (i = 0; i < layer._latlngs.length; i++) {
@@ -505,51 +622,89 @@
 							layer._latlngs[i].lng,
 						]);
 					}
-					data.routes.push(points);					
+					data.routes.push({
+						coords: points,
+						videosources: videosources
+					});					
 				} else if ($(section).hasClass('address')) {
-					data.addresses.push([
-						layer._latlng.lat,
-						layer._latlng.lng,
-					]);
+					data.addresses.push({
+						coords: [
+							layer._latlng.lat,
+							layer._latlng.lng,
+						],
+						videosources: videosources
+					});
 				} else if ($(section).hasClass('circle')) {
 					data.circles.push({
 						latitude : layer._latlng.lat,
 						longitude : layer._latlng.lng,
-						radius : (layer._mRadius/1000).toFixed(3)
+						radius : (layer._mRadius/1000).toFixed(3),
+						videosources: videosources
 					});
 				}
+				
 			});
 			return data;
 		},
-		fit_data_geo: function(geo) {
+		fit_geo: function(geo, videosources) {
 			var that = this;
-			var i, layer, counter = 0;
+			var i, layer, container, counter = 0;
 			for (i = 0; i < geo.areas.length; i++) {
-				layer = L.polygon(geo.areas[i], this.options.draw).addTo(this.drawnItems);
-				this.build_section_info('polygon', layer);
+				layer = L.polygon(geo.areas[i].coords, this.options.draw).addTo(this.drawnItems);
+				container = this.build_section_info('polygon', layer);
 				counter++;
 			}
 			for (i = 0; i < geo.routes.length; i++) {
 				layer = L.polyline(
-					geo.routes[i], 
+					geo.routes[i].coords, 
 					$.extend({}, that.options.draw, {
 						fill: false
 					})
 				).addTo(this.drawnItems);
-				this.build_section_info('polyline', layer);
+				container = this.build_section_info('polyline', layer);
 				counter++;
 			}
 			for (i = 0; i < geo.circles.length; i++) {
 				layer = L.circle([geo.circles[i].latitude, geo.circles[i].longitude], geo.circles[i].radius*1000, that.options.draw).addTo(this.drawnItems);
-				this.build_section_info('circle', layer);
+				container = this.build_section_info('circle', layer);
 				counter++;
 			}
 			for (i = 0; i < geo.addresses.length; i++) {
-				layer = L.marker([geo.addresses[i][0], geo.addresses[i][1]], {icon: new that.options.Address_Marker()}).addTo(this.drawnItems);
-				this.build_section_info('marker', layer);
+				layer = L.marker([geo.addresses[i].coords[0], geo.addresses[i].coords[1]], {icon: new that.options.Address_Marker()}).addTo(this.drawnItems);
+				container = this.build_section_info('marker', layer);
 				counter++;
 			}
 			$('.selected-cameras').text(counter);
+		},
+		parse_cameras_from_areas: function() {
+			
+		},
+		fit_cameras: function(cameras, container) {
+			// fit cameras into container					
+			for (var i = 0; i < cameras.length; i++) {				
+				// if camera is new on the map
+				if (!this.camera_markers[cameras[i].id]) {
+					container.find('.no-cameras-message').hide();
+					var camera_block = $('.template.camera-block').clone(true).removeClass('template');
+					camera_block.find(".camera-name").text(cameras[i].name);
+					cameras[i].state = cameras[i].state || 1;
+					var marker = this.create_camera_marker(cameras[i].position, cameras[i].state);
+					marker.bindPopup(cameras[i].name);
+					var camera = {
+						id: cameras[i].id,
+						name: cameras[i].name,
+						position: cameras[i].position,
+						state: cameras[i].state, // 0 - not found, 1 - ok, 2 - break
+						marker: marker
+					};
+					this.camera_markers[cameras[i].id] = camera;
+					camera_block.attr('leaflet-id', marker._leaflet_id).data('camera', camera).appendTo(container);
+					if (cameras[i].state != 1) {
+						camera_block.addClass('camera-disable').find("[type=checkbox]").remove();
+					}
+				}
+			}
+			this.update_cameras_numbers();
 		}
 	}
 	$(document).ready(function() {

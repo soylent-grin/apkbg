@@ -207,13 +207,18 @@ i {
 	display: inline-block;
 	width: 20px;
 	height: 20px;
-	vertical-align: middle;
+	vertical-align: sub;
 }
-i.info {
+i.info,
+i.camera-info{
 	background-image: url('../img/button-detail-sprite.png');
 	&:hover {
 		background-position-y: 22px; 
 	}
+}
+
+i.camera-info {
+	vertical-align: inherit;
 }
 
 header {

@@ -85,6 +85,41 @@
     background-size:100%;
     background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><g><rect x='5%' y='0' width='90%' height='20' fill='#f9b000' style='-webkit-svg-shadow: 0 2px 3px rgba(0,0,0,0.6);'></rect></g><svg x='50%' y='20' style='overflow:visible;'><polygon points='-10,0 10,0 0,10' fill='#f9b000' style='-webkit-svg-shadow: 0 2px 3px rgba(0,0,0,0.6);'></polygon></svg></svg>");
 }
+
+.leaflet-camera-icon {
+	background-image: url("../img/markers.png");
+	background-position-x: -8px; 
+	color: white;
+	text-align: center;
+	line-height: 40px;
+	font-size: 14px;
+	&:hover {
+		background-position-y: -60px;
+	}
+	&:active {
+		background-position-y: -120px;
+	}
+}
+
+.leaflet-selected-camera-icon {
+	background-position-y: -180px;
+	&:hover {
+		background-position-y: -240px;
+	}
+	&:active {
+		background-position-y: -300px;
+	}
+}
+
+.leaflet-disabled-camera-icon {
+	background-position-y: -360px;
+	&:hover {
+		background-position-y: -420px;
+	}
+	&:active {
+		background-position-y: -480px;
+	}
+}
 	
 
 // styles for event.html
@@ -208,6 +243,7 @@
 			height: 30px;
 			line-height: 30px;
 			padding-left: 15px;
+			margin-bottom: 0;
 		}
 		input[type=checkbox] {
 			position: absolute;
@@ -216,6 +252,16 @@
 			> span {
 				display: block;
 				margin-left: 20px;
+			}
+			.camera-name {
+				margin-right: 5px;
+				display: inline-block;
+				max-width: 85%;
+				white-space: nowrap;
+				height: 20px;
+				overflow: hidden;
+				position: relative;
+				text-overflow: ellipsis;
 			}
 		}
 		select {
@@ -239,19 +285,37 @@
 		}
 		.cameras-list {
 			padding-bottom: 20px;
-			max-height: 100%;
+			
+			max-height: -moz-calc(~"100% - 45px");
+			max-height: -webkit-calc(~"100% - 45px");
+			max-height: -o-calc(~"100% - 45px");
+			max-height: calc(~"100% - 45px");
 			width: 100%;
 			position: relative;
 			overflow-x: auto;
 		}
 		.camera-block {
-			padding-left: 15px;
-			margin-bottom: 20px;
+			padding-left: 9px;
+			padding-top: 20px;
 			padding-bottom: 20px;
+			border-left: 6px solid transparent;
 			border-bottom: 1px solid #E0E0E0;
+			.camera-disabled-message {
+				display: none;
+				color: #c04a48;
+				margin: -5px 0 5px 20px;
+				font-style: italic;
+			}
+		}
+		.camera-block.camera-disable {
+			.camera-disabled-message {
+				display: block;
+			}
+		}
+		.camera-block.camera-active {
+			border-left: 6px solid #1587E0;
 		}
 		.camera-block:last-child {
-			padding-bottom: 0;
 			border-bottom: none;
 		}
 		.photos-list-header, 
@@ -275,6 +339,7 @@
 		}
 		.no-cameras-message {
 			margin-left: 15px;
+			margin-top: 15px;
 		}
 	}
 	.save-block {

@@ -71,8 +71,9 @@
 			set_period(data.period, template);
 			template.find('div:nth-child(3)').text(data.name);
 			template.find('div:nth-child(4)').text(data.address);
-			template.find('div:nth-child(5)').text(data.cameras.length);
+			template.find('div:nth-child(5)').text(data.videosources.length);
 			template.attr('data-name', data.name)
+					.attr('data-id', data.id)
 					.attr('data-address', data.address)
 					.attr('data-start', data.period.start)
 					.attr('data-end', data.period.end);
@@ -127,7 +128,7 @@
 	}
 	
 	$(document).ready(function() {
-		$.getJSON('events.json', function(data) {
+		$.getJSON('http://10.1.29.20:7777/massevent/events/list/', function(data) {
 			for (var i = 0; i < data.length; i++) {
 				add_event(data[i]);
 			}
