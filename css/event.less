@@ -88,36 +88,39 @@
 
 .leaflet-camera-icon {
 	background-image: url("../img/markers.png");
-	background-position-x: -8px; 
+	background-position: -8px 0; 
 	color: white;
 	text-align: center;
 	line-height: 40px;
 	font-size: 14px;
 	&:hover {
-		background-position-y: -60px;
+		background-position: -8px -60px;
 	}
-	&:active {
-		background-position-y: -120px;
+	&:active,
+	&:focus{
+		background-position: -8px -120px;
 	}
 }
 
 .leaflet-selected-camera-icon {
-	background-position-y: -180px;
+	background-position: -8px -180px;
 	&:hover {
-		background-position-y: -240px;
+		background-position: -8px -240px;
 	}
-	&:active {
-		background-position-y: -300px;
+	&:active,
+	&:focus{
+		background-position: -8px -300px;
 	}
 }
 
 .leaflet-disabled-camera-icon {
-	background-position-y: -360px;
+	background-position: -8px -360px;
 	&:hover {
-		background-position-y: -420px;
+		background-position: -8px -420px;
 	}
-	&:active {
-		background-position-y: -480px;
+	&:active,
+	&:focus{
+		background-position: -8px -480px;
 	}
 }
 	
@@ -456,6 +459,16 @@
 		padding: 0;
 		bottom: 0;
 		height: 100%;
+		.cameras-list {			
+			max-height: -moz-calc(~"60% - 45px");
+			max-height: -webkit-calc(~"60% - 45px");
+			max-height: -o-calc(~"60% - 45px");
+			max-height: calc(~"60% - 45px");
+		}
+		.photos-list-header, 
+		.photos-list {
+			display: block;
+		}
 	}
 	.center {
 		left: 0;
@@ -581,11 +594,14 @@
 		width: 75%;
 		margin-bottom: 0;
 		.list {
-			> div {
+			> div,
+			> a {
 				border-bottom: 1px solid #E7E7E7;
 				line-height: 50px;
+				display: block;
 				height: 50px;
 				cursor: pointer;
+				color: #464646;
 				> div {
 					float: left;
 					padding: 0 0 0 20px;
@@ -610,10 +626,10 @@
 					width: 20%;
 				}
 			}
-			> div:hover {
+			> a:hover {
 				background-color: #f1f1f1;
 			}
-			> div:active {
+			> a:active {
 				background-color: #dbdbdb;
 			}
 			.date-info {

@@ -2,7 +2,7 @@
 (function($) {
 	'use strict';	
 	
-	BASE_URL = BASE_URL || "localhost";
+	BASE_URL = BASE_URL || "localhost/";
 	
 	//string formatting god, follow him!
 	String.prototype.format = function() {
@@ -16,7 +16,10 @@
 		this.is_new = event_params.is_new;
 		this.is_past = event_params.is_past;
 		this.is_watch = event_params.is_watch;
-		this.watchers = $.getJSON('operators.json', function(data) {
+		if (!this.is_new) {
+			this.event_id = event_params.id;
+		}
+		this.watchers = $.getJSON(BASE_URL + 'operators/list/', function(data) {
 			that.operators = data;
 			// enable watchers combobox in DOM
 			$.each(data, function(i, operator) {
@@ -102,7 +105,7 @@
 	CityEvent.prototype = {
 		load_data: function() {
 			var that = this;
-			$.getJSON('event.json', function (data) {
+			$.getJSON(BASE_URL + 'events/get/?id=' + this.event_id, function (data) {
 				that.data = data;
 				if (that.is_watch) {
 					that.fit_data_for_operator(data);
@@ -120,6 +123,7 @@
 			$('#event-description').val(data.description);
 			$('#event-class').val(data.class);
 			$('.to-sub-menu.active').text(data.name);
+			$('#event-address').val(data.address);
 			this.fit_data_date(data.period);
 			this.map.fit_geo(data.geo, data.videosources);
 		},
@@ -142,8 +146,10 @@
 			
 		},
 		save_event: function() {
+			var that = this;
 			if (this.is_valid_event()) {
 				var data = {
+					'id': this.event_id || 0,
 					'name': $('#event-name').val(),
 					'description': $('#event-description').val(),
 					'type': $('#event-class').val(),
@@ -153,10 +159,27 @@
 					'videosources': this.map.get_videosources()
 				};
 				
+				var url = BASE_URL;
+				if (this.is_new) {
+					url += "events/create/";
+				}
+				else {
+					url += "events/update/";
+				}				
 				$.ajax({
 					type: "POST",
-					url: "/post_event",
+					contentType: "application/json",
+					url: url,
 					data: JSON.stringify(data),
+					success: function(id) {
+						if (id && id != "") {
+							that.is_new = false;
+							that.event_id = id;							
+						}
+					},
+					error: function() {
+						
+					}
 				});
 			}
 		},
@@ -410,21 +433,21 @@
 			
 			/*
 			$('#cameras-address').geocomplete().bind("geocode:result", function(event, result){
-				var coords = L.latLng(result.geometry.location.k, result.geometry.location.A)
-				that.map.setView(coords);
+				var vertices = L.latLng(result.geometry.location.k, result.geometry.location.A)
+				that.map.setView(vertices);
 				var radius = $('#cameras-radius').val();
 				if (that.is_new) {					
 					if (radius == 0) {					
-						var marker = L.marker(coords, {icon: new that.options.Address_Marker()}).addTo(that.drawnItems);
+						var marker = L.marker(vertices, {icon: new that.options.Address_Marker()}).addTo(that.drawnItems);
 						that.build_section_info('marker', marker);
 					}
 					else if ($.isNumeric(radius)) {
-						var circle = L.circle(coords, radius * 1000, that.options.draw).addTo(that.drawnItems);
+						var circle = L.circle(vertices, radius * 1000, that.options.draw).addTo(that.drawnItems);
 					}
 					that.build_section_info('circle', circle);
 				}
 				else {
-					L.setView(coords);
+					L.setView(vertices);
 				}
 			});
 			*/
@@ -438,9 +461,12 @@
 			});
 			
 			marker.addTo(this.drawnItems);
+			/*
+			// in the future, maybe..
 			if (state != 1) {
 				$(marker._icon).addClass('leaflet-disabled-camera-icon');
 			}
+			*/
 			return marker;
 		},
 		delete_camera_marker: function(camera) {
@@ -516,7 +542,7 @@
 		set_cameras: function(type, layer, container) {
 			var data = {};
 			var that = this;
-			var url = 'http://10.1.30.41:9000/massevent/videosources/';
+			var url = BASE_URL + 'videosources/';
 			data.type = type;
 			switch (type) {
 				case 'marker':
@@ -591,7 +617,7 @@
 			var camera, operator;
 			$('.camera-block:not(.template) input[type=checkbox]').each(function(i, input) {
 				camera = $(input).parents('.camera-block').data('camera');
-				operator = $(input).prop('checked') ? $(input).parents('.camera-block').find('.operator').val() : "";
+				operator = $(input).prop('checked') ? $(input).parents('.camera-block').find('.operator').val() : "-1";
 				cameras.push({
 					id: camera.id,
 					name: camera.name,
@@ -633,7 +659,7 @@
 						]);
 					}
 					data.polygons.push({
-						coords: points,
+						vertices: points,
 						videosources: videosources
 					});					
 				} else if ($(section).hasClass('route')) {
@@ -645,12 +671,12 @@
 						]);
 					}
 					data.routes.push({
-						coords: points,
+						vertices: points,
 						videosources: videosources
 					});					
 				} else if ($(section).hasClass('address')) {
 					data.addresses.push({
-						coords: [
+						vertices: [
 							layer._latlng.lat,
 							layer._latlng.lng,
 						],
@@ -660,7 +686,7 @@
 					data.circles.push({
 						latitude : layer._latlng.lat,
 						longitude : layer._latlng.lng,
-						radius : (layer._mRadius/1000).toFixed(3),
+						radius : parseFloat((layer._mRadius/1000).toFixed(3)),
 						videosources: videosources
 					});
 				}
@@ -675,39 +701,41 @@
 				this.fit_geo_area(geo.polygons[i], 'polygon', videosources);
 				counter++;
 			}
-			for (i = 0; i < geo.routes.length; i++) {
-				this.fit_geo_area(geo.routes[i], 'polyline', videosources);
-				counter++;
-			}
 			for (i = 0; i < geo.circles.length; i++) {
 				this.fit_geo_area(geo.circles[i], 'circle', videosources);
+				counter++;
+			}
+			/* in the future, maybe..
+			for (i = 0; i < geo.routes.length; i++) {
+				this.fit_geo_area(geo.routes[i], 'polyline', videosources);
 				counter++;
 			}
 			for (i = 0; i < geo.addresses.length; i++) {
 				this.fit_geo_area(geo.addresses[i], 'marker', videosources);
 				counter++;
 			}
+			*/
 			$('.selected-cameras').text(counter);
 		},
 		fit_geo_area: function(area, type, videosources) {
 			var layer, container, cameras;
 			switch(type) {
 				case "polygon":
-					layer = L.polygon(area.coords, this.options.draw).addTo(this.drawnItems);
+					layer = L.polygon(area.vertices, this.options.draw).addTo(this.drawnItems);
 					break;
 				case "polyline":
 					layer = L.polyline(
-						area.coords, 
+						area.vertices, 
 						$.extend({}, this.options.draw, {
 								fill: false
 						})
-					);
+					).addTo(this.drawnItems);
 					break;
 				case "circle":
 					layer = L.circle([area.latitude, area.longitude], area.radius*1000, this.options.draw).addTo(this.drawnItems);
 					break;
 				case "marker":
-					layer = L.marker([area.coords[0], area.coords[1]], {icon: new this.options.Address_Marker()}).addTo(this.drawnItems);
+					layer = L.marker([area.vertices[0], area.vertices[1]], {icon: new this.options.Address_Marker()}).addTo(this.drawnItems);
 					break;
 				default:
 					break;					
@@ -751,10 +779,13 @@
 						};
 						this.camera_markers[cameras[i].id] = camera;
 						camera_block.attr('leaflet-id', marker._leaflet_id).data('camera', camera).appendTo(container);
+						/*
+						// in the future, maybe..
 						if (cameras[i].state != 1) {
 							camera_block.addClass('camera-disable').find("[type=checkbox]").remove();
 						}
-						if (cameras[i].operator && cameras[i].operator != '') {
+						*/
+						if (cameras[i].operator && cameras[i].operator != '-1') {
 							camera_block.find('.operator').val(cameras[i].operator);
 							camera_block.find('input[type=checkbox]').click();
 						}
@@ -763,6 +794,9 @@
 			}
 			this.update_cameras_numbers();
 		}
+	};
+	function getURLParameter(name) {
+		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
 	}
 	$(document).ready(function() {
 		var event, event_params = {
@@ -770,9 +804,11 @@
 			is_past: false,
 			is_watch: false
 		};
-		if (window.location.hash == "#existing") {
+		var id = getURLParameter("id");
+		if (id) {
 			// load existing event
 			event_params.is_new = false;
+			event_params.id = id;
 		}
 		if (window.location.hash == "#past") {
 			// load past event to view post-factum

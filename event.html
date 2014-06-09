@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="dry/css/leaflet.css">
 	<link rel="stylesheet" href="dry/css/leaflet.draw.css">
 	<link rel="stylesheet" href="dry/css/colorbox.css">
+	<link rel="stylesheet" href="dry/css/jquery-pnotify.css">
 	<link rel="stylesheet/less" type="text/css" href="css/style.less">
 	<link rel="stylesheet/less" type="text/css" href="css/event.less">	
 	
@@ -166,19 +167,22 @@
 			</span>
 		</label>
 		<div class="camera-disabled-message">Камера недоступна</div>
-		<select name="" id="" class="block-in"></select>
+		<select name="" id="" class="block-in">
+			<option value="">Какое-то поле. Не смотрите на него</option>
+		</select>
 		<select name="" id="" class="operator" disabled></select>
 	</div>
 	<script>
 		var BASE_URL;
 		(function get_base_url() {
-			BASE_URL = 'http://10.1.30.3:7103/massevent';
+			BASE_URL = 'http://10.1.31.21:7001/massevent/';
 		})();
 	</script>
 	<script src="dry/js/jquery.js"></script>
 	<script src="dry/js/moment.js"></script>
 	<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
 	<script src="dry/js/jquery.geocomplete.js"></script>
+	<script src="dry/js/jquery-pnotify.js"></script>
 	<script src="dry/js/bootstrap-datetimepicker-min.js"></script>
 	<script src="dry/js/bootstrap-datetimepicker.ru.js"></script>
 	<script src="dry/js/leaflet.js"></script>

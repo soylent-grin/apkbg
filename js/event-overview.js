@@ -1,5 +1,6 @@
 (function($) {
 	'use strict';
+	BASE_URL = BASE_URL || "localhost/";
 	function get_period() {
 		var period = {};
 		var date_start, date_end, time_start, time_end;
@@ -55,30 +56,32 @@
 			container.find('.date-info').find('span:nth-child(2)').hide();
 		}
 	}
-	
-	function show_event() {
-		var $this = $(this);
-		var url = "event.html#existing";
-		// ...
-		// some preparations
-		// ...
-		window.location = url;
-	}
-	
+		
 	function add_event(data) {
 		if (data.period && data.name) {
 			var template = $('.event-row.template').clone(true).removeClass('template');
 			set_period(data.period, template);
 			template.find('div:nth-child(3)').text(data.name);
 			template.find('div:nth-child(4)').text(data.address);
-			template.find('div:nth-child(5)').text(data.videosources.length);
+			template.find('div:nth-child(5)').text(get_active_videosourses_count(data.videosources));
 			template.attr('data-name', data.name)
 					.attr('data-id', data.id)
 					.attr('data-address', data.address)
 					.attr('data-start', data.period.start)
-					.attr('data-end', data.period.end);
+					.attr('data-end', data.period.end)
+					.attr('href', "event.html?id=" + data.id);
 			template.appendTo('.event-list .list');
 		}
+	}
+	
+	function get_active_videosourses_count(videosources) {
+		var counter = 0;
+		for (var i =0; i < videosources.length; i++) {
+			if (videosources[i].operator != "-1") {
+				counter++;
+			}
+		}
+		return counter;
 	}
 	
 	function search_events() {		
@@ -128,7 +131,7 @@
 	}
 	
 	$(document).ready(function() {
-		$.getJSON('http://10.1.29.20:7777/massevent/events/list/', function(data) {
+		$.getJSON(BASE_URL + 'events/list/', function(data) {
 			for (var i = 0; i < data.length; i++) {
 				add_event(data[i]);
 			}
@@ -175,7 +178,6 @@
 			$("#event-date-from").data('datetimepicker').setEndDate(end_date);
 		});
 		$('.search .button-search').on('click', search_events);
-		$('.event-row').on('click', show_event);
 		$('.search .clean-search').on('click', function(e) {
 			e.preventDefault();
 			$('.search input').val('');			
