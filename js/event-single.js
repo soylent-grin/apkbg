@@ -14,6 +14,8 @@
 	function CityEvent(event_params) {
 		var that = this;
 		this.is_new = event_params.is_new;
+		this.is_past = event_params.is_past;
+		this.is_watch = event_params.is_watch;
 		this.watchers = $.getJSON('operators.json', function(data) {
 			that.operators = data;
 			// enable watchers combobox in DOM
@@ -77,9 +79,18 @@
 			$('#content').addClass('event-existing');
 			this.load_data();
 		}
+		if (this.is_past) {
+			$('#content').addClass('event-past');
+			this.load_data();
+		}
+		if (this.is_watch) {
+			$('#content').addClass('event-watch');
+			this.load_data();
+		}
 		
 		$('body').removeClass('preloader');
-		this.map = new CityMap(this.is_new);
+		var allow_edit = !this.is_past && !this.is_watch;
+		this.map = new CityMap(allow_edit);
 		// initialize lightbox
 		$(".photos-list a").colorbox({
 			rel:'img-group',
@@ -93,13 +104,22 @@
 			var that = this;
 			$.getJSON('event.json', function (data) {
 				that.data = data;
-				that.fit_data(data);
+				if (that.is_watch) {
+					that.fit_data_for_operator(data);
+				}
+				else {
+					that.fit_data(data);
+				}
 			});
+		},
+		fit_data_for_operator: function(data) {
+			this.map.fit_geo(data.geo, data.videosources);
 		},
 		fit_data: function(data) {
 			$('#event-name').val(data.name);
-			$('#event-description').val(data.desc);
+			$('#event-description').val(data.description);
 			$('#event-class').val(data.class);
+			$('.to-sub-menu.active').text(data.name);
 			this.fit_data_date(data.period);
 			this.map.fit_geo(data.geo, data.videosources);
 		},
@@ -182,7 +202,7 @@
 		},
 		is_valid_cameras: function() {
 			// dummy for camera validation
-			return $('.section-info:not(.template)').length < 10;
+			return true;// $('.section-info:not(.template)').length < 10;
 		},
 		get_period: function() {
 			var period = {};
@@ -212,8 +232,8 @@
 		}
 	};
 	
-	function CityMap(is_new) {
-		this.is_new = is_new;
+	function CityMap(allow_edit) {
+		this.allow_edit = allow_edit;
 		this.options = {
 			Address_Marker: L.Icon.extend({
 				options: {
@@ -256,11 +276,11 @@
 				clickable: true
 			}
 		};
-		this.init(is_new);
+		this.init(allow_edit);
 	} 
 	CityMap.prototype = {
 		constructor: CityMap,
-		init: function(is_new) {
+		init: function(allow_edit) {
 			var that = this;
 			this.address_markers = [];
 			this.camera_markers = {};
@@ -273,7 +293,7 @@
 			
 			this.drawnItems = new L.FeatureGroup();
 			this.map.addLayer(this.drawnItems);
-			if (is_new) {
+			if (allow_edit) {
 				var drawControl = new L.Control.Draw({
 					draw: {
 						position: 'topleft',
@@ -436,6 +456,7 @@
 				camera_block.find('.camera-name').text('{0}. {1}'.format(i+1, camera_block.data('camera').name));
 				marker._icon.innerHTML = i+1;
 			});
+			$('.selected-cameras').text($('.camera-block input[type=checkbox]:checked').length);
 		},
 		create_area: function(layer, type) {
 			var el = this.build_section_info(type, layer);				
@@ -535,6 +556,7 @@
 				container.find('.no-cameras-message').removeClass('preloader');
 			});
 			*/
+			container.find('.no-cameras-message').addClass('preloader');
 			$.ajax({
 				dataType: "json",
 				type: "POST",
@@ -565,12 +587,12 @@
 			});
 		},
 		get_videosources: function() {
-			var cameras = {};
+			var cameras = [];
 			var camera, operator;
 			$('.camera-block:not(.template) input[type=checkbox]').each(function(i, input) {
 				camera = $(input).parents('.camera-block').data('camera');
 				operator = $(input).prop('checked') ? $(input).parents('.camera-block').find('.operator').val() : "";
-				cameras[camera.id] = {
+				cameras.push({
 					id: camera.id,
 					name: camera.name,
 					operator: operator,
@@ -578,7 +600,7 @@
 						camera.marker._latlng.lat,
 						camera.marker._latlng.lng
 					]
-				};
+				});
 				
 			});
 			return cameras;
@@ -588,7 +610,7 @@
 			var data = {
 				addresses: [],
 				routes: [],
-				areas: [],
+				polygons: [],
 				circles: []
 			};
 			var points, i;
@@ -596,10 +618,10 @@
 				layer = $(section).data('layer');
 				// get selected cameras in area
 				var videosources = [];
-				$(section).find('.camera-block input[type=checkbox]:checked').each(function(i, camera) {
+				$(section).find('.camera-block input[type=checkbox]').each(function(i, camera) {
 					camera = $(this).parents('.camera-block'); 
 					console.log($(camera).data('camera'));
-					videosources.push($(camera).data('camera').id);
+					videosources.push(($(camera).data('camera').id).toString());
 					
 				});
 				if ($(section).hasClass('area')) {
@@ -610,7 +632,7 @@
 							layer._latlngs[i].lng
 						]);
 					}
-					data.areas.push({
+					data.polygons.push({
 						coords: points,
 						videosources: videosources
 					});					
@@ -648,60 +670,95 @@
 		},
 		fit_geo: function(geo, videosources) {
 			var that = this;
-			var i, layer, container, counter = 0;
-			for (i = 0; i < geo.areas.length; i++) {
-				layer = L.polygon(geo.areas[i].coords, this.options.draw).addTo(this.drawnItems);
-				container = this.build_section_info('polygon', layer);
+			var i, counter = 0;
+			for (i = 0; i < geo.polygons.length; i++) {
+				this.fit_geo_area(geo.polygons[i], 'polygon', videosources);
 				counter++;
 			}
 			for (i = 0; i < geo.routes.length; i++) {
-				layer = L.polyline(
-					geo.routes[i].coords, 
-					$.extend({}, that.options.draw, {
-						fill: false
-					})
-				).addTo(this.drawnItems);
-				container = this.build_section_info('polyline', layer);
+				this.fit_geo_area(geo.routes[i], 'polyline', videosources);
 				counter++;
 			}
 			for (i = 0; i < geo.circles.length; i++) {
-				layer = L.circle([geo.circles[i].latitude, geo.circles[i].longitude], geo.circles[i].radius*1000, that.options.draw).addTo(this.drawnItems);
-				container = this.build_section_info('circle', layer);
+				this.fit_geo_area(geo.circles[i], 'circle', videosources);
 				counter++;
 			}
 			for (i = 0; i < geo.addresses.length; i++) {
-				layer = L.marker([geo.addresses[i].coords[0], geo.addresses[i].coords[1]], {icon: new that.options.Address_Marker()}).addTo(this.drawnItems);
-				container = this.build_section_info('marker', layer);
+				this.fit_geo_area(geo.addresses[i], 'marker', videosources);
 				counter++;
 			}
 			$('.selected-cameras').text(counter);
 		},
-		parse_cameras_from_areas: function() {
+		fit_geo_area: function(area, type, videosources) {
+			var layer, container, cameras;
+			switch(type) {
+				case "polygon":
+					layer = L.polygon(area.coords, this.options.draw).addTo(this.drawnItems);
+					break;
+				case "polyline":
+					layer = L.polyline(
+						area.coords, 
+						$.extend({}, this.options.draw, {
+								fill: false
+						})
+					);
+					break;
+				case "circle":
+					layer = L.circle([area.latitude, area.longitude], area.radius*1000, this.options.draw).addTo(this.drawnItems);
+					break;
+				case "marker":
+					layer = L.marker([area.coords[0], area.coords[1]], {icon: new this.options.Address_Marker()}).addTo(this.drawnItems);
+					break;
+				default:
+					break;					
+			}
+			container = this.build_section_info(type, layer);
+			cameras = this.parse_cameras_from_areas(area.videosources, videosources);
+			this.fit_cameras(cameras, container);
 			
+		},
+		parse_cameras_from_areas: function(ids, videosources) {
+			var cameras = [];
+			for (var i = 0; i < ids.length; i++) {
+				for (var j = 0; j < videosources.length; j++) {
+					if (videosources[j].id == ids[i]) {
+						cameras.push(videosources[j]);		
+						break;
+					}
+				}
+			}
+			console.log(cameras);
+			return cameras;			
 		},
 		fit_cameras: function(cameras, container) {
 			// fit cameras into container					
 			for (var i = 0; i < cameras.length; i++) {				
 				// if camera is new on the map
 				if (!this.camera_markers[cameras[i].id]) {
-					container.find('.no-cameras-message').hide();
-					var camera_block = $('.template.camera-block').clone(true).removeClass('template');
-					camera_block.find(".camera-name").text(cameras[i].name);
-					cameras[i].state = cameras[i].state || 1;
-					var marker = this.create_camera_marker(cameras[i].position, cameras[i].state);
-					marker.bindPopup(cameras[i].name);
-					var camera = {
-						id: cameras[i].id,
-						name: cameras[i].name,
-						position: cameras[i].position,
-						state: cameras[i].state, // 0 - not found, 1 - ok, 2 - break
-						marker: marker
-					};
-					this.camera_markers[cameras[i].id] = camera;
-					camera_block.attr('leaflet-id', marker._leaflet_id).data('camera', camera).appendTo(container);
-					if (cameras[i].state != 1) {
-						camera_block.addClass('camera-disable').find("[type=checkbox]").remove();
-					}
+					if (cameras[i].operator != '' || this.allow_edit) {
+						container.find('.no-cameras-message').hide();
+						var camera_block = $('.template.camera-block').clone(true).removeClass('template');
+						camera_block.find(".camera-name").text(cameras[i].name);
+						cameras[i].state = cameras[i].state || 1;
+						var marker = this.create_camera_marker(cameras[i].position, cameras[i].state);
+						marker.bindPopup(cameras[i].name);
+						var camera = {
+							id: cameras[i].id,
+							name: cameras[i].name,
+							position: cameras[i].position,
+							state: cameras[i].state, // 0 - not found, 1 - ok, 2 - break
+							marker: marker
+						};
+						this.camera_markers[cameras[i].id] = camera;
+						camera_block.attr('leaflet-id', marker._leaflet_id).data('camera', camera).appendTo(container);
+						if (cameras[i].state != 1) {
+							camera_block.addClass('camera-disable').find("[type=checkbox]").remove();
+						}
+						if (cameras[i].operator && cameras[i].operator != '') {
+							camera_block.find('.operator').val(cameras[i].operator);
+							camera_block.find('input[type=checkbox]').click();
+						}
+					}					
 				}
 			}
 			this.update_cameras_numbers();
@@ -709,11 +766,21 @@
 	}
 	$(document).ready(function() {
 		var event, event_params = {
-			is_new: true
+			is_new: true,
+			is_past: false,
+			is_watch: false
 		};
 		if (window.location.hash == "#existing") {
-			// load existing event to view post-factum
+			// load existing event
 			event_params.is_new = false;
+		}
+		if (window.location.hash == "#past") {
+			// load past event to view post-factum
+			event_params.is_past = true;
+		}
+		if (location.pathname == "/apkbg/event-watch.html") {
+			// load to monitor during the event
+			event_params.is_watch = true;
 		}
 		event = new CityEvent(event_params);
 	});

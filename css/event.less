@@ -224,7 +224,6 @@
 		right: 0;
 		padding: 0;
 		left: auto;	
-		overflow: hidden;
 		h4 {
 			margin: 0;
 			padding-left: 15px;
@@ -244,6 +243,7 @@
 			line-height: 30px;
 			padding-left: 15px;
 			margin-bottom: 0;
+			margin-top: 0;
 		}
 		input[type=checkbox] {
 			position: absolute;
@@ -285,7 +285,7 @@
 		}
 		.cameras-list {
 			padding-bottom: 20px;
-			
+			border-top: 1px solid white;
 			max-height: -moz-calc(~"100% - 45px");
 			max-height: -webkit-calc(~"100% - 45px");
 			max-height: -o-calc(~"100% - 45px");
@@ -338,8 +338,7 @@
 			}
 		}
 		.no-cameras-message {
-			margin-left: 15px;
-			margin-top: 15px;
+			margin: 10px;
 		}
 	}
 	.save-block {
@@ -399,7 +398,7 @@
 	}
 }
 
-.event-single.event-existing {
+.event-single.event-past {
 	.left, .right, .center{
 		height: -moz-calc(~"100% - 30px");
 		height: -webkit-calc(~"100% - 30px");
@@ -416,6 +415,24 @@
 	}
 	.center input[type=number] {
 		pointer-events: none;	 
+	}
+	.right {
+		.cameras-list {			
+			max-height: -moz-calc(~"60% - 45px");
+			max-height: -webkit-calc(~"60% - 45px");
+			max-height: -o-calc(~"60% - 45px");
+			max-height: calc(~"60% - 45px");
+			.camera-block {
+				label,
+				input[type=checkbox],
+				select {
+					pointer-events: none;					
+				}
+			}
+		}
+		input[type=checkbox] {
+			
+		}
 	}
 	.right i.icon-download,
 	.photos-list-header, 
@@ -459,11 +476,26 @@
 		}
 	}
 	.right {
-		 h4:first-child {
-			 margin: 0;
-		 }
+		h4:first-child {
+			margin: 0;
+		}
 		i.icon-download {
 			display: none;
+		}
+		.camera-block {
+			position: relative;
+			label {
+				margin-bottom: 0;
+			}
+			input[type=checkbox] {
+				display: none;
+			}
+		}
+		.camera-settings {
+			right: 20px;
+			top: 20px;
+			position: absolute;
+			
 		}
 	}
 }
